@@ -42,14 +42,7 @@ public class Item : MonoBehaviour
 
     public void UseShopItem()
     {
-        //item is an ability
-        if(shopItem.gameObject.GetComponent<AbilityIdentifier>())
-        {
-           // AbilityManager.Instance.ability = shopItem.GetComponent<>();
-        }
-        else 
-        {
-            //item is a skin
+      
             if (shopManager.AffordItemCheck(price, shopItem, isLocked, itemIndexInArray, anim) != false)
             {
 
@@ -57,12 +50,8 @@ public class Item : MonoBehaviour
                 UpdateLockedState();
 
             }
-        }
-      
-       
-          
+        
 
-       
 
     }
 
