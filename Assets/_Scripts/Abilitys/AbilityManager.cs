@@ -2,6 +2,7 @@ using CodeMonkey.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Timers;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -20,7 +21,7 @@ public class AbilityManager : MonoBehaviour
     //time thats passed
     public float elapsed;
 
-    
+    bool canActivate = false;
 
 
    
@@ -42,28 +43,44 @@ public class AbilityManager : MonoBehaviour
 
     private void Update()
     {
-       // abilityUI.SetActive(!usedAbility);
+        // abilityUI.SetActive(!usedAbility);
 
 
-   
-        if(usedAbility) 
+
+        if (usedAbility)
         {
             elapsed += Time.deltaTime;
             abilitySlider.value -= Time.deltaTime;
 
-            if (elapsed > currentAbility.coolDownTime) 
+            if (!canActivate)
             {
-                DeactivateAbility();
-                UpdateSliderUi();
-                elapsed = 0;
-                usedAbility = false;
+                if (elapsed > currentAbility.coolDownTime)
+                {
+                    DeactivateAbility();
+                    GreyOutUI();
 
-             
+                    elapsed = 0;
+                    canActivate = true;
+                }
+            }
+
+            else if (canActivate)
+            {
+                if (elapsed > currentAbility.DeactiveTime)
+                {
+                    DeactivateAbility();
+                    UpdateSliderUi();
+                    ResetUiColor();
+
+                    elapsed = 0;
+                    canActivate = false;
+                    usedAbility = false;
+                }
+
+
             }
 
         }
-     
-
 
 
 
@@ -111,6 +128,18 @@ public class AbilityManager : MonoBehaviour
         abilitySlider.value = abilitySlider.maxValue;
     }
 
+    void GreyOutUI()
+    {
+
+        var abilIcon = abilityUI.GetComponent<Image>();
+        abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, .25f);
+    }
+    void ResetUiColor()
+    {
+
+        var abilIcon = abilityUI.GetComponent<Image>();
+        abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, 1);
+    }
 
     void DeactivateAbility()
     {

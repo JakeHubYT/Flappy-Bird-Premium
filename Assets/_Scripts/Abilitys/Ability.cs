@@ -9,6 +9,7 @@ public class Ability : ScriptableObject
 
     public float coolDownTime;
 
+    public float DeactiveTime;
 
     public virtual void Activate() { }
 

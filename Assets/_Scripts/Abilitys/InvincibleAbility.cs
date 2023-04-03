@@ -6,6 +6,7 @@ using UnityEngine;
 [CreateAssetMenu]
 public class InvincibleAbility : Ability
 {
+    
     public override void Activate()
     {
         Actions.OnInvulnerable();
