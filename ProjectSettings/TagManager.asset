@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ShopManager
   - ItemPrice
+  - AbilityManager
   layers:
   - Default
   - TransparentFX

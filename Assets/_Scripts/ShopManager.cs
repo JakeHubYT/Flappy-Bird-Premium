@@ -83,7 +83,7 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    public bool AffordItemCheck(int price, GameObject skin, bool itemIsLocked, int arrayIndex, Animator itemAnimator)
+    public bool AffordItemCheck(int price, bool itemIsLocked, int arrayIndex, Animator itemAnimator)
     {
 
        
@@ -96,12 +96,8 @@ public class ShopManager : MonoBehaviour
             Debug.Log("Already Unlocked, Equipping Skin") ;
             itemAnimator.SetTrigger("Equip");
 
-            EquipSkin(skin);
-
-
-
             Actions.OnSkinChanged();
-            return false;  
+            return true;  
 
         
         }
@@ -116,11 +112,10 @@ public class ShopManager : MonoBehaviour
             itemAnimator.SetTrigger("Buy");
 
             Money -= price;
-            EquipSkin(skin);
             UpdateMoneyUI();
             isLocked[arrayIndex] = true;
 
-            Actions.OnSkinChanged();
+           
             return true;
         }
         else
@@ -133,7 +128,7 @@ public class ShopManager : MonoBehaviour
 
             Debug.Log("No Buy");
 
-            Actions.OnSkinChanged();
+           
             return false;
         }
        

@@ -7,8 +7,10 @@ public class Item : MonoBehaviour
 {
 
     public int price = 32;
+
+
     public GameObject shopItem;
-    
+    public Ability ability;
 
 
     int itemIndexInArray;
@@ -18,7 +20,8 @@ public class Item : MonoBehaviour
 
     TextMeshProUGUI priceTxt;
     ShopManager shopManager;
-    Animator anim;
+    
+   public Animator anim;
 
 
     private void Awake()
@@ -36,20 +39,41 @@ public class Item : MonoBehaviour
         
         UpdateLockedState();
       
+
         anim = GetComponent<Animator>();
 
     }
 
     public void UseShopItem()
     {
-      
-            if (shopManager.AffordItemCheck(price, shopItem, isLocked, itemIndexInArray, anim) != false)
-            {
 
+        if (shopItem == null)
+        {
+            if (shopManager.AffordItemCheck(price, isLocked, itemIndexInArray, anim) != false)
+            {
                 isLocked = false;
+
+                AbilityManager.Instance.EquipAbility(ability);
                 UpdateLockedState();
 
             }
+            
+        }
+        else
+        {
+            if (shopManager.AffordItemCheck(price, isLocked, itemIndexInArray, anim) != false)
+            {
+
+                isLocked = false;
+
+                shopManager.EquipSkin(shopItem);
+                Actions.OnSkinChanged();
+                UpdateLockedState();
+
+            }
+        }
+
+            
         
 
 
