@@ -1,11 +1,18 @@
+using UnityEngine;
 using CodeMonkey.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Timers;
 using Unity.VisualScripting;
-using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+
+public enum AbilityState
+{
+    Active,
+    Deactive,
+    Ready
+}
 
 public class AbilityManager : MonoBehaviour
 {
@@ -16,15 +23,13 @@ public class AbilityManager : MonoBehaviour
 
     public static AbilityManager Instance { get; private set; }
 
-    public bool usedAbility = false;
+    private AbilityState abilityState;
 
-    //time thats passed
-    public float elapsed;
+    // time that's passed
+    private float elapsed;
 
-    bool canActivate = false;
+    private bool canActivate = false;
 
-
-   
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -36,115 +41,108 @@ public class AbilityManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        abilityState = AbilityState.Ready;
         UpdateSliderUi();
-
     }
-
 
     private void Update()
     {
-        // abilityUI.SetActive(!usedAbility);
-
-
-
-        if (usedAbility)
+        switch (abilityState)
         {
-            elapsed += Time.deltaTime;
-            abilitySlider.value -= Time.deltaTime;
-
-            if (!canActivate)
-            {
-                if (elapsed > currentAbility.coolDownTime)
-                {
-                    DeactivateAbility();
-                    GreyOutUI();
-
-                    elapsed = 0;
-                    canActivate = true;
-                }
-            }
-
-            else if (canActivate)
-            {
-                if (elapsed > currentAbility.DeactiveTime)
-                {
-                    DeactivateAbility();
-                    UpdateSliderUi();
-                    ResetUiColor();
-
-                    elapsed = 0;
-                    canActivate = false;
-                    usedAbility = false;
-                }
-
-
-            }
-
+            case AbilityState.Ready:
+                HandleReadyState();
+                break;
+            case AbilityState.Active:
+                HandleActiveState();
+                break;
+            case AbilityState.Deactive:
+                HandleDeactiveState();
+                break;
         }
+    }
 
-
-
-        if (Input.GetKeyDown(KeyCode.Mouse1) && usedAbility == false)
+    private void HandleReadyState()
+    {
+        abilityUI.SetActive(true);
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             if (currentAbility == null)
             {
                 Debug.Log("No Ability Equipped");
-
             }
             else
             {
                 Debug.Log("Ability Used");
                 currentAbility.Activate();
-                usedAbility = true;
-                
-            
+                elapsed = 0;
+                abilitySlider.value = abilitySlider.maxValue;
+                abilityState = AbilityState.Active;
             }
-           
-
         }
-        else if (Input.GetKeyDown(KeyCode.Mouse1) && usedAbility == true)
+    }
+
+    private void HandleActiveState()
+    {
+        elapsed += Time.deltaTime;
+        abilitySlider.value -= Time.deltaTime;
+        if (!canActivate)
         {
-            Debug.Log("Ability Deactivated");
-
-            currentAbility.Deactivate();
-            usedAbility = false;
-
-           
+            if (elapsed > currentAbility.coolDownTime)
+            {
+                DeactivateAbility();
+                GreyOutUI();
+                elapsed = 0;
+                canActivate = true;
+            }
         }
+        else if (canActivate)
+        {
+            if (elapsed > currentAbility.DeactiveTime)
+            {
+                DeactivateAbility();
+                UpdateSliderUi();
+                ResetUiColor();
+                elapsed = 0;
+                canActivate = false;
+                abilityState = AbilityState.Ready;
+            }
+        }
+    }
+
+    private void HandleDeactiveState()
+    {
+        Debug.Log("Ability Deactivated");
+        currentAbility.Deactivate();
+        abilityState = AbilityState.Ready;
     }
 
     public void EquipAbility(Ability abilityToEquip)
     {
-        currentAbility= abilityToEquip;
+        currentAbility = abilityToEquip;
         Debug.Log("equipping " + abilityToEquip);
-
         UpdateSliderUi();
-       
     }
 
-    void UpdateSliderUi()
+    private void GreyOutUI()
     {
-        abilitySlider.maxValue = currentAbility.coolDownTime;
-        abilitySlider.value = abilitySlider.maxValue;
-    }
-
-    void GreyOutUI()
-    {
-
         var abilIcon = abilityUI.GetComponent<Image>();
         abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, .25f);
     }
-    void ResetUiColor()
-    {
 
+    private void ResetUiColor()
+    {
         var abilIcon = abilityUI.GetComponent<Image>();
         abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, 1);
     }
 
-    void DeactivateAbility()
+    private void DeactivateAbility()
     {
         currentAbility.Deactivate();
-       
-       
+    }
+
+    private void UpdateSliderUi()
+    {
+        abilitySlider.maxValue = currentAbility.coolDownTime;
+        abilitySlider.value = abilitySlider.maxValue;
     }
 }

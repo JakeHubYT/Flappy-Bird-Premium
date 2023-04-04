@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody rb;
     public AudioClip flapSound;
     public AudioClip dieSound;
+    public Transform skinHolder;
 
     public float jumpForce = 5f;
     public Animator anim;
@@ -24,11 +25,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < skinHolder.childCount; i++)
         {
-            if (transform.GetChild(i).gameObject.activeSelf)
+            if (skinHolder.GetChild(i).gameObject.activeSelf)
             {
-                anim = transform.GetChild(i).GetComponent<Animator>();
+                anim = skinHolder.GetChild(i).GetComponent<Animator>();
             }
         }
            
@@ -61,9 +62,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void KillPlayer()
     {
-
-       if(! CommandScript.Instance.takeDamage) { return; }
-
 
         gameObject.SetActive(false);
         AudioManager.Instance.PlaySound(dieSound);

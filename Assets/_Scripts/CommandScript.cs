@@ -5,8 +5,7 @@ using UnityEngine;
 public class CommandScript : MonoBehaviour
 {
 
-    public bool takeDamage = true;
-    
+    bool invincibleToggled = false;
 
     public static CommandScript Instance { get; private set; }
 
@@ -23,4 +22,23 @@ public class CommandScript : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void KillPlayer()
+    {
+        Actions.OnPlayerDeath();
+    }
+
+    public void ToggleInvincibility()
+    {
+        if(!invincibleToggled)
+        {
+            Actions.OnInvulnerable();
+            invincibleToggled = true;
+        }
+        else if (invincibleToggled) 
+        {
+            Actions.OnVulnerable();
+            invincibleToggled = false;
+        }
+
+    }
 }

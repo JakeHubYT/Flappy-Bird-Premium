@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
         }
 
         #endregion
+
         if (highScore < score)
         {
             highScore = score;

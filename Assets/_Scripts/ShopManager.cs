@@ -21,7 +21,7 @@ public class ShopManager : MonoBehaviour
 
     public GameObject shopParent;
 
-    public GameObject player;
+    public Transform skinParent;
     public GameManager gameManager;
     public static int lastEquippedSkinNum;
 
@@ -52,13 +52,13 @@ public class ShopManager : MonoBehaviour
         Actions.OnSkinChanged();
 
         DisablePreviousSkins();
-        player.transform.GetChild(lastEquippedSkinNum).gameObject.SetActive(true);
+        skinParent.GetChild(lastEquippedSkinNum).gameObject.SetActive(true);
     }
 
     private void Update()
     {
         ResetShopCommand();
-        GiveMoneyCommand();
+        
 
         if(shopParent.activeSelf && !playingMusic)
         {
@@ -75,12 +75,10 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    private void GiveMoneyCommand()
+    public void GiveMoneyCommand()
     {
-       if(Input.GetKeyDown(KeyCode.M)) 
-        {
             Money += 100;
-        }
+            UpdateMoneyUI();
     }
 
     public bool AffordItemCheck(int price, bool itemIsLocked, int arrayIndex, Animator itemAnimator)
@@ -139,9 +137,9 @@ public class ShopManager : MonoBehaviour
     {
         
         //check if skin is under parent
-        for (int i = 0; i < player.transform.childCount; i++)
+        for (int i = 0; i < skinParent.childCount; i++)
         {
-            if(player.transform.GetChild(i).name == skin.name)
+            if(skinParent.GetChild(i).name == skin.name)
             {
                 lastEquippedSkinNum = i;
 
@@ -153,9 +151,9 @@ public class ShopManager : MonoBehaviour
 
     private void DisablePreviousSkins()
     {
-        for (int i = 0; i < player.transform.childCount; i++)
+        for (int i = 0; i < skinParent.childCount; i++)
         {
-            player.transform.GetChild(i).gameObject.SetActive(false);
+            skinParent.GetChild(i).gameObject.SetActive(false);
         }
       
     }

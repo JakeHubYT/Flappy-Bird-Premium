@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Fast Fall Ability
   coolDownTime: 5
+  DeactiveTime: 5
