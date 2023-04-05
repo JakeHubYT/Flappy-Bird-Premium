@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoveForward : MonoBehaviour
 {
-    public float moveSpeed = 8;
+  
     bool stopped = false;
 
     private void OnEnable()
@@ -24,7 +24,7 @@ public class MoveForward : MonoBehaviour
     void Update()
     {
         if(!stopped)
-         transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);   
+         transform.Translate(Vector3.right * PipeSpawner.Instance.pipeSpeed * Time.deltaTime);   
     }
 
     void StopMoveForward()

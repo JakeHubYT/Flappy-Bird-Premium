@@ -63,7 +63,7 @@ public class ShopManager : MonoBehaviour
         if(shopParent.activeSelf && !playingMusic)
         {
           
-            AudioManager.Instance.PlayMusic(shopMusic, true);
+            AudioManager.Instance.PlayMusic(shopMusic,false, true);
             Debug.Log("Playing Music");
 
             playingMusic = true;

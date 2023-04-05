@@ -20,6 +20,13 @@ public class AbilityManager : MonoBehaviour
     public static Ability currentAbility;
     public GameObject abilityUI;
     public Slider abilitySlider;
+    public Animator powerUpAnim;
+
+    public AudioClip powerUpStartSound;
+    public AudioClip powerUpContinueSound;
+
+    bool enteredReady = true;
+
 
     public static AbilityManager Instance { get; private set; }
 
@@ -43,6 +50,8 @@ public class AbilityManager : MonoBehaviour
 
         abilityState = AbilityState.Ready;
         UpdateSliderUi();
+
+
     }
 
     private void Update()
@@ -63,7 +72,17 @@ public class AbilityManager : MonoBehaviour
 
     private void HandleReadyState()
     {
-        abilityUI.SetActive(true);
+        
+        if(enteredReady)
+        {
+            abilityUI.SetActive(true);
+            DeactivateAbility();
+            UpdateSliderUi();
+            ResetUiColor();
+            enteredReady = false;
+        }
+     
+
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             if (currentAbility == null)
@@ -73,7 +92,16 @@ public class AbilityManager : MonoBehaviour
             else
             {
                 Debug.Log("Ability Used");
+
+
                 currentAbility.Activate();
+                powerUpAnim.SetBool("Activate", true);
+                AudioManager.Instance.PlaySound(powerUpStartSound);
+                AudioManager.Instance.PlayMusic(powerUpContinueSound, true);
+
+
+
+
                 elapsed = 0;
                 abilitySlider.value = abilitySlider.maxValue;
                 abilityState = AbilityState.Active;
@@ -85,6 +113,7 @@ public class AbilityManager : MonoBehaviour
     {
         elapsed += Time.deltaTime;
         abilitySlider.value -= Time.deltaTime;
+
         if (!canActivate)
         {
             if (elapsed > currentAbility.coolDownTime)
@@ -114,6 +143,7 @@ public class AbilityManager : MonoBehaviour
         Debug.Log("Ability Deactivated");
         currentAbility.Deactivate();
         abilityState = AbilityState.Ready;
+       
     }
 
     public void EquipAbility(Ability abilityToEquip)
@@ -138,10 +168,23 @@ public class AbilityManager : MonoBehaviour
     private void DeactivateAbility()
     {
         currentAbility.Deactivate();
+        powerUpAnim.SetBool("Activate", false);
+        AudioManager.Instance.FadeOut(1, true);
+
+    }
+
+    public void ResetState()
+    {
+        abilityState = AbilityState.Ready;
+        enteredReady = true;
     }
 
     private void UpdateSliderUi()
     {
+        if(abilitySlider == null) { return; }
+        if (currentAbility == null) { return; }
+
+
         abilitySlider.maxValue = currentAbility.coolDownTime;
         abilitySlider.value = abilitySlider.maxValue;
     }

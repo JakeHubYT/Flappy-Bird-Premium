@@ -13,26 +13,37 @@ public class PipeSpawner : MonoBehaviour
     public float intervalDecreaseRate = 0.1f;
     public bool spawnOnStart = true;
 
-    private float interval;
+    public float interval;
     private float timeSinceLastSpawn;
 
     float pipeRanY = 3.5f;
     bool canSpawnPipes = true;
     public bool canDamage = true;
 
+    public float pipeSpeed = 8;
+    private bool speedUpPipes = false;
+    private float ogPipeSpeed;
+
     private void OnEnable()
     {
         Actions.OnPlayerDeath += StopSPawningPipes;
+
         Actions.OnInvulnerable += PreventDamage;
         Actions.OnVulnerable += AllowDamage;
 
+        Actions.OnSkipStart += SpeedUpPipes;
+        Actions.OnSkipStartEnd += SlowPipes;
 
     }
     private void OnDisable()
     {
         Actions.OnPlayerDeath -= StopSPawningPipes;
+
         Actions.OnInvulnerable -= PreventDamage;
         Actions.OnVulnerable -= AllowDamage;
+
+        Actions.OnSkipStart -= SpeedUpPipes;
+        Actions.OnSkipStartEnd -= SlowPipes;
 
 
 
@@ -63,6 +74,9 @@ public class PipeSpawner : MonoBehaviour
         {
             Spawn();
         }
+
+        ogPipeSpeed = pipeSpeed;
+
     }
 
     void Update()
@@ -79,6 +93,29 @@ public class PipeSpawner : MonoBehaviour
 
         // Decrease interval over time
         interval = Mathf.Max(minInterval, interval - (intervalDecreaseRate * Time.deltaTime));
+
+
+
+        if (speedUpPipes)
+        {
+
+            interval = .75f;
+            pipeSpeed = pipeSpeed * 4;
+            Actions.OnInvulnerable();
+            speedUpPipes = false;
+        }
+    }
+
+    public void SpeedUpPipes()
+    {
+        speedUpPipes= true;
+     
+    }
+
+    public void SlowPipes()
+    {
+        pipeSpeed = ogPipeSpeed;
+        interval = 1.2f;
     }
 
 

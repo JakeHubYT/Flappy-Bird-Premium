@@ -6,11 +6,13 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
   
     public AudioSource musicSource;
+    public AudioSource longSFXSource;
+
     bool playingMusic = false;
 
 
     float startVolume;
-    private Coroutine fadeCoroutine;
+    public Coroutine fadeCoroutine;
 
     private void Awake()
     {
@@ -33,8 +35,13 @@ public class AudioManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position);
     }
 
-    public void PlayMusic(AudioClip clip, bool loop = false)
+    public void PlayMusic(AudioClip clip, bool sFX = false, bool loop = false)
     {
+        AudioSource thisSource;
+        if (sFX == true) { thisSource = longSFXSource; }
+        else { thisSource = musicSource; }
+     
+
         if (fadeCoroutine != null)
         {
             StopCoroutine(fadeCoroutine);
@@ -42,12 +49,12 @@ public class AudioManager : MonoBehaviour
 
         playingMusic = true;
 
-        musicSource.volume = 0;
+        thisSource.volume = 0;
 
-        musicSource.volume = startVolume;
-        musicSource.clip = clip;
-        musicSource.loop = loop;
-        musicSource.Play();
+        thisSource.volume = startVolume;
+        thisSource.clip = clip;
+        thisSource.loop = loop;
+        thisSource.Play();
 
     }
 
@@ -58,14 +65,19 @@ public class AudioManager : MonoBehaviour
         musicSource.Stop();
     }
 
-    public void FadeOut(float duration)
+    public void FadeOut(float duration, bool sFX = false)
     {
+        AudioSource thisSource;
+
+        if (sFX == true) { thisSource = longSFXSource; }
+        else { thisSource = musicSource; }
+
         Debug.Log("Fading");
 
         playingMusic = false;
 
 
-        StartCoroutine(FadeOutCoroutine(duration));
+        StartCoroutine(FadeOutCoroutine(duration, thisSource));
 
 
         if (fadeCoroutine != null)
@@ -74,23 +86,23 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private IEnumerator FadeOutCoroutine(float duration)
+    private IEnumerator FadeOutCoroutine(float duration, AudioSource sourceToFade)
     {
 
          if(playingMusic) { yield break; }
 
-        startVolume = musicSource.volume;
+        startVolume = sourceToFade.volume;
 
-        while (musicSource.volume > 0)
+        while (sourceToFade.volume > 0)
         {
             if (playingMusic) { yield break; }
 
-            musicSource.volume -= startVolume * Time.deltaTime / duration;
+            sourceToFade.volume -= startVolume * Time.deltaTime / duration;
             yield return null;
         }
 
-        musicSource.Stop();
-        musicSource.volume = startVolume;
+        sourceToFade.Stop();
+        sourceToFade.volume = startVolume;
     }
 }
 

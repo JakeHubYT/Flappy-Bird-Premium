@@ -4,19 +4,18 @@ using UnityEngine;
 
 
 [CreateAssetMenu]
-public class FastFallAbility : Ability
+public class SkipStartAbility : Ability
 {
-    public float fallForce = 5;
-
+    
     public override void Activate()
     {
-        Actions.OnFastFall();
+
+        Actions.OnSkipStart();  
     }
 
     public override void Deactivate()
     {
-        
+        Actions.OnSkipStartEnd();
     }
-
 
 }

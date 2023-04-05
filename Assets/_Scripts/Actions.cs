@@ -15,5 +15,13 @@ public static class Actions
 
     public static Action OnVulnerable;
 
+    public static Action OnFastFall;
+
+    public static Action OnSkipStart;
+
+    public static Action OnSkipStartEnd;
+
+
+
 
 }

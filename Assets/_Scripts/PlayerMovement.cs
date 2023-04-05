@@ -11,15 +11,22 @@ public class PlayerMovement : MonoBehaviour
 
     public float jumpForce = 5f;
     public Animator anim;
+    public ParticleSystem dirt;
+
+
     bool flap = false;
+    bool canFastFall = false;
 
     private void OnEnable()
     {
         Actions.OnPlayerDeath += KillPlayer;
+        Actions.OnFastFall += FastFall;
     }
     private void OnDisable()
     {
         Actions.OnPlayerDeath -= KillPlayer;
+        Actions.OnFastFall -= FastFall;
+
 
     }
 
@@ -33,8 +40,10 @@ public class PlayerMovement : MonoBehaviour
             }
         }
            
-        
-       
+        if(dirt.isPlaying)
+            dirt.Stop();
+
+
     }
 
     void Update()
@@ -45,8 +54,21 @@ public class PlayerMovement : MonoBehaviour
 
             AudioManager.Instance.PlaySound(flapSound);
             flap = true;
+            canFastFall = false;
         }
-    
+
+        if (canFastFall)
+        {
+         
+            rb.velocity = Vector3.up * -jumpForce;
+
+        }
+
+        anim.SetBool("FastFall", canFastFall);
+
+     
+
+
     }
     private void FixedUpdate()
     {
@@ -68,4 +90,28 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    public void FastFall()
+    {
+        canFastFall = true;
+    }
+
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject.tag == "Ground")
+        {
+            anim.SetBool("onGround", true);
+            dirt.Play();
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            anim.SetBool("onGround", false);
+            dirt.Stop();
+
+        }
+    }
 }
