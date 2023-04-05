@@ -4,23 +4,68 @@ using UnityEngine;
 
 public class DamagePlayer : MonoBehaviour
 {
+    public GameObject pipePart;
+    public GameObject particles;
 
-   
-    
-    private void OnCollisionEnter(Collision collision)
+    public AudioClip hitMetal;
+
+    private void Start()
     {
+        if(pipePart == null ) { return; }
+        pipePart.SetActive(true);
+        particles.SetActive(false);
 
-        if(collision.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
+    }
+    private void OnTriggerEnter(Collider collision)
+    {
+    
+
+        if (collision.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
         {
           
                 Actions.OnPlayerDeath();
 
         }
+        else if (collision.gameObject.tag == "Player" && !PipeSpawner.Instance.canDamage && gameObject.tag == "Pipe")
+        {
+            pipePart.SetActive(false);
+            particles.SetActive(true);
+            AudioManager.Instance.PlaySound(hitMetal, 1, true);
+        }
+
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void OnTriggerStay(Collider other)  
     {
 
+        if (other.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
+        {
+
+            Actions.OnPlayerDeath();
+
+        }
+        else if (other.gameObject.tag == "Player" && !PipeSpawner.Instance.canDamage && gameObject.tag == "Pipe")
+        {
+            pipePart.SetActive(false);
+            particles.SetActive(true);
+
+         
+
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+         if (other.gameObject.tag == "Player" && !PipeSpawner.Instance.canDamage && gameObject.tag == "Pipe")
+        {
+            pipePart.SetActive(false);
+            particles.SetActive(true);
+
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
         if (collision.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
         {
 
@@ -28,7 +73,6 @@ public class DamagePlayer : MonoBehaviour
 
         }
     }
-
 
 
 }

@@ -7,6 +7,9 @@ public class AudioManager : MonoBehaviour
   
     public AudioSource musicSource;
     public AudioSource longSFXSource;
+    public AudioSource sfxSource;
+    public AudioSource sfxSecondarySource;
+
 
     bool playingMusic = false;
 
@@ -30,9 +33,19 @@ public class AudioManager : MonoBehaviour
 
     }
 
-    public void PlaySound(AudioClip clip)
+    public void PlaySound(AudioClip clip, float pitch = 1, bool audioSource2 = false)
     {
-        AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position);
+        if(!audioSource2)
+        {
+            sfxSource.PlayOneShot(clip);
+            sfxSource.pitch = pitch;
+        }
+        else if (audioSource2)
+        {
+            sfxSecondarySource.PlayOneShot(clip);
+            sfxSecondarySource.pitch = pitch;
+        }
+
     }
 
     public void PlayMusic(AudioClip clip, bool sFX = false, bool loop = false)

@@ -4,39 +4,80 @@ using UnityEngine;
 
 public class SpeedUpBackgroundScript : MonoBehaviour
 {
-
-    public GameObject spedUpBG;
-
-
+    public Material[] materials; // array of materials to modify
+    private static float[] originalScrollSpeeds; // static array to store original _ScrollSpeed values
+    private bool isDoubled = false; // flag to track whether scroll speed is currently doubled
 
     private void OnEnable()
     {
-        Actions.OnSkipStart += IncreaseBGSpeed;
-        Actions.OnSkipStartEnd += ResetSpeed;
-
+        Actions.OnSkipStart += DoubleScrollSpeeds;
+        Actions.OnSkipStartEnd += DecreaseScrollSpeed;
     }
+
     private void OnDisable()
     {
-        Actions.OnSkipStart -= IncreaseBGSpeed;
-        Actions.OnSkipStartEnd -= ResetSpeed;
-
-
+        Actions.OnSkipStart -= DoubleScrollSpeeds;
+        Actions.OnSkipStartEnd -= DecreaseScrollSpeed;
     }
 
     private void Start()
     {
-        spedUpBG.SetActive(false);
+        SetOriginalScrollSpeeds();
+        ResetScrollSpeeds();
     }
 
-    void IncreaseBGSpeed()
+    private void SetOriginalScrollSpeeds()
     {
-        spedUpBG.SetActive(true);
-
+        // store the original _ScrollSpeed values if they haven't been set yet
+        if (originalScrollSpeeds == null)
+        {
+            originalScrollSpeeds = new float[materials.Length];
+            for (int i = 0; i < materials.Length; i++)
+            {
+                originalScrollSpeeds[i] = materials[i].GetFloat("_ScrollSpeed") * 1.5f;
+            }
+        }
     }
 
-    void ResetSpeed()
+    private void ResetScrollSpeeds()
     {
-        spedUpBG.SetActive(false);
+        // reset to original _ScrollSpeed values
+        for (int i = 0; i < materials.Length; i++)
+        {
+            materials[i].SetFloat("_ScrollSpeed", originalScrollSpeeds[i]);
+        }
+        isDoubled = false;
+    }
 
+    private void DoubleScrollSpeeds()
+    {
+        // double the scroll speed
+        for (int i = 0; i < materials.Length; i++)
+        {
+            materials[i].SetFloat("_ScrollSpeed", originalScrollSpeeds[i] * 2);
+        }
+        isDoubled = true;
+    }
+
+    private void DecreaseScrollSpeed()
+    {
+        // if the scroll speed is currently doubled, decrease it gradually
+        if (isDoubled)
+        {
+            for (int i = 0; i < materials.Length; i++)
+            {
+                float currentScrollSpeed = materials[i].GetFloat("_ScrollSpeed");
+                float newScrollSpeed = Mathf.Lerp(currentScrollSpeed, originalScrollSpeeds[i], Time.deltaTime * 3f);
+                materials[i].SetFloat("_ScrollSpeed", newScrollSpeed);
+            }
+        }
     }
 }
+
+
+
+
+
+
+
+

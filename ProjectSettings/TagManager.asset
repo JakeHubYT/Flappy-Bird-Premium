@@ -8,6 +8,7 @@ TagManager:
   - ItemPrice
   - AbilityManager
   - Ground
+  - Pipe
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - Player
   - Water
   - UI
-  - 
+  - Pipe
   - 
   - 
   - 
