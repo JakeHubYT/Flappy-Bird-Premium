@@ -23,6 +23,9 @@ public class PipeSpawner : MonoBehaviour
     public float pipeSpeed = 8;
     private bool speedUpPipes = false;
     private float ogPipeSpeed;
+  
+
+    Coroutine thisRoutine = null;
 
     private void OnEnable()
     {
@@ -34,6 +37,8 @@ public class PipeSpawner : MonoBehaviour
         Actions.OnSkipStart += SpeedUpPipes;
         Actions.OnSkipStartEnd += SlowPipes;
 
+       // Actions.OnDoubleLife += HasSecondLife;
+
     }
     private void OnDisable()
     {
@@ -44,6 +49,9 @@ public class PipeSpawner : MonoBehaviour
 
         Actions.OnSkipStart -= SpeedUpPipes;
         Actions.OnSkipStartEnd -= SlowPipes;
+
+        //Actions.OnDoubleLife -= HasSecondLife;
+
 
 
 
@@ -108,14 +116,34 @@ public class PipeSpawner : MonoBehaviour
 
     public void SpeedUpPipes()
     {
-        speedUpPipes= true;
+        
+        if(thisRoutine != null)
+        StopCoroutine(thisRoutine); 
+
+        speedUpPipes = true;
+        thisRoutine = StartCoroutine(StartVulnerableTimer(AbilityManager.currentAbility.coolDownTime + 2));
+
+    }
+
+    void SlowPipes()
+    {
+
+        pipeSpeed = ogPipeSpeed;
+        interval = 1.2f;
      
     }
 
-    public void SlowPipes()
+    public void GotHitWhileDoubleLife()
     {
-        pipeSpeed = ogPipeSpeed;
-        interval = 1.2f;
+
+        if (thisRoutine != null)
+            StopCoroutine(thisRoutine);
+
+      
+       // thisRoutine = StartCoroutine(StartVulnerableTimer(AbilityManager.currentAbility.coolDownTime + 2));
+        thisRoutine = StartCoroutine(StartVulnerableTimer(2));
+
+
     }
 
 
@@ -141,4 +169,33 @@ public class PipeSpawner : MonoBehaviour
     {
         canDamage = true;
     }
+
+ 
+
+
+    private IEnumerator StartVulnerableTimer(float delay)
+    {
+        while (true)
+        {
+
+            Debug.Log("Entered");
+
+            yield return new WaitForSeconds(delay);
+
+            Debug.Log("Calling On Vulnerable");
+            // Call the function
+            Actions.OnVulnerable();
+
+            /*   // Reset the timer if the repeat flag is set
+               if (!repeat)
+               {
+                   // Disable the Timer component if the repeat flag is not set
+                   enabled = false;
+                   yield break;
+               }*/
+        }
+    }
+
+   
 }
+

@@ -48,7 +48,7 @@ public class AudioManager : MonoBehaviour
 
     }
 
-    public void PlayMusic(AudioClip clip, bool sFX = false, bool loop = false)
+    public void PlayMusic(AudioClip clip, bool sFX = false, bool loop = false, float volume = 1)
     {
         AudioSource thisSource;
         if (sFX == true) { thisSource = longSFXSource; }
@@ -64,7 +64,7 @@ public class AudioManager : MonoBehaviour
 
         thisSource.volume = 0;
 
-        thisSource.volume = startVolume;
+        thisSource.volume = volume;
         thisSource.clip = clip;
         thisSource.loop = loop;
         thisSource.Play();
@@ -85,7 +85,7 @@ public class AudioManager : MonoBehaviour
         if (sFX == true) { thisSource = longSFXSource; }
         else { thisSource = musicSource; }
 
-        Debug.Log("Fading");
+      //  Debug.Log("Fading");
 
         playingMusic = false;
 

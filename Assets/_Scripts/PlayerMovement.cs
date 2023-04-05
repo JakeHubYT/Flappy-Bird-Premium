@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     bool flap = false;
     bool canFastFall = false;
 
-    private void OnEnable()
+private void OnEnable()
     {
         Actions.OnPlayerDeath += KillPlayer;
         Actions.OnFastFall += FastFall;
@@ -67,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("FastFall", canFastFall);
 
      
-
+      
 
     }
     private void FixedUpdate()

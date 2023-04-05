@@ -9,7 +9,10 @@ public class DamagePlayer : MonoBehaviour
 
     public AudioClip hitMetal;
 
-    private void Start()
+
+ 
+   
+private void Start()
     {
         if(pipePart == null ) { return; }
         pipePart.SetActive(true);
@@ -18,7 +21,8 @@ public class DamagePlayer : MonoBehaviour
     }
     private void OnTriggerEnter(Collider collision)
     {
-    
+        
+
 
         if (collision.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
         {
@@ -38,6 +42,8 @@ public class DamagePlayer : MonoBehaviour
     private void OnTriggerStay(Collider other)  
     {
 
+       
+
         if (other.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
         {
 
@@ -56,7 +62,10 @@ public class DamagePlayer : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-         if (other.gameObject.tag == "Player" && !PipeSpawner.Instance.canDamage && gameObject.tag == "Pipe")
+        
+
+
+        if (other.gameObject.tag == "Player" && !PipeSpawner.Instance.canDamage && gameObject.tag == "Pipe")
         {
             pipePart.SetActive(false);
             particles.SetActive(true);
@@ -66,6 +75,8 @@ public class DamagePlayer : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+       
+
         if (collision.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
         {
 
@@ -74,6 +85,6 @@ public class DamagePlayer : MonoBehaviour
         }
     }
 
-
+   
 }
 

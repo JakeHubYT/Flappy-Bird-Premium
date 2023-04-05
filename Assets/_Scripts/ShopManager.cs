@@ -36,13 +36,21 @@ public class ShopManager : MonoBehaviour
     public TextMeshProUGUI[] moneyText;
 
     int index = 0;
+    private bool doubleCoins = false;
+
     private void OnEnable()
     {
         Actions.OnCollectPoint += AddToMoney;
+
+        Actions.OnDoubleCoins += DoubleCoins;
+        Actions.OnDoubleCoinsEnd += NormalCoins;
     }
     private void OnDisable()
     {
         Actions.OnCollectPoint -= AddToMoney;
+
+        Actions.OnDoubleCoins -= DoubleCoins;
+        Actions.OnDoubleCoinsEnd -= NormalCoins;
     }
 
     private void Awake()
@@ -158,11 +166,28 @@ public class ShopManager : MonoBehaviour
       
     }
 
+    #region Add To Coins Logic
+
     void AddToMoney()
     {
+        if(doubleCoins)
+        {
+            Money += 1;
+        }
         Money += 1;
         UpdateMoneyUI();
     }
+
+    public void DoubleCoins()
+    {
+        doubleCoins = true;
+    }
+    public void NormalCoins()
+    {
+        doubleCoins = false;
+    }
+
+    #endregion
 
     void UpdateMoneyUI()
     {

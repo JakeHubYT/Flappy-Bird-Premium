@@ -18,7 +18,7 @@ public class SelectCurrentPlayer : MonoBehaviour
 
     void UpdateSkin()
     {
-        Debug.Log("Called");
+       // Debug.Log("Called");
         for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(false);

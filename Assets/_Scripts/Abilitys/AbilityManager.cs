@@ -36,7 +36,18 @@ public class AbilityManager : MonoBehaviour
     private float elapsed;
 
     private bool canActivate = false;
+    public bool tookDamage = false;
+    
 
+    private void OnEnable()
+    {
+        Actions.OnPlayerDeath += StopMusic;
+    }
+    private void OnDisable()
+    {
+        Actions.OnPlayerDeath -= StopMusic;
+
+    }
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -72,8 +83,9 @@ public class AbilityManager : MonoBehaviour
 
     private void HandleReadyState()
     {
-        
-        if(enteredReady)
+        if (currentAbility == null) { return; }
+
+        if (enteredReady)
         {
             abilityUI.SetActive(true);
             DeactivateAbility();
@@ -81,6 +93,7 @@ public class AbilityManager : MonoBehaviour
             ResetUiColor();
             enteredReady = false;
         }
+     
      
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -97,7 +110,7 @@ public class AbilityManager : MonoBehaviour
                 currentAbility.Activate();
                 powerUpAnim.SetBool("Activate", true);
                 AudioManager.Instance.PlaySound(powerUpStartSound);
-                AudioManager.Instance.PlayMusic(powerUpContinueSound, true);
+                AudioManager.Instance.PlayMusic(powerUpContinueSound, true, true, .5f);
 
 
 
@@ -107,6 +120,8 @@ public class AbilityManager : MonoBehaviour
                 abilityState = AbilityState.Active;
             }
         }
+
+        
     }
 
     private void HandleActiveState()
@@ -143,7 +158,8 @@ public class AbilityManager : MonoBehaviour
         Debug.Log("Ability Deactivated");
         currentAbility.Deactivate();
         abilityState = AbilityState.Ready;
-       
+     
+
     }
 
     public void EquipAbility(Ability abilityToEquip)
@@ -187,5 +203,11 @@ public class AbilityManager : MonoBehaviour
 
         abilitySlider.maxValue = currentAbility.coolDownTime;
         abilitySlider.value = abilitySlider.maxValue;
+    }
+
+    void StopMusic()
+    {
+        AudioManager.Instance.FadeOut(1, true);
+
     }
 }

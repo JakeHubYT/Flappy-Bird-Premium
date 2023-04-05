@@ -11,6 +11,11 @@ public class Ability : ScriptableObject
 
     public float DeactiveTime;
 
+   
+
+   
+
+
     public virtual void Activate() { }
 
     public virtual void Deactivate() { }
