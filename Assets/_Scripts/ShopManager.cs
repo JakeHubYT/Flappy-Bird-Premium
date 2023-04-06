@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ public class ShopManager : MonoBehaviour
 
     public static int Money;
 
-    public AudioClip shopMusic;
+  
 
     public AudioClip buySound;
     public AudioClip errorSound;
@@ -66,21 +67,8 @@ public class ShopManager : MonoBehaviour
     private void Update()
     {
         ResetShopCommand();
-        
 
-        if(shopParent.activeSelf && !playingMusic)
-        {
-          
-            AudioManager.Instance.PlayMusic(shopMusic,false, true);
-            Debug.Log("Playing Music");
-
-            playingMusic = true;
-        }
-        else if (!shopParent.activeSelf && playingMusic == true) {
-            playingMusic = false;
-            AudioManager.Instance.FadeOut(2f);
-           
-        }
+       
     }
 
     public void GiveMoneyCommand()
@@ -97,7 +85,7 @@ public class ShopManager : MonoBehaviour
         //anim already unlocked
         if (!itemIsLocked) 
         {
-            AudioManager.Instance.PlaySound(equipSound);
+            AudioManager.Instance.PlaySound(equipSound, 1, true);
 
             Debug.Log("Already Unlocked, Equipping Skin") ;
             itemAnimator.SetTrigger("Equip");
@@ -112,7 +100,7 @@ public class ShopManager : MonoBehaviour
         {
             Debug.Log("Yes Buy");
 
-            AudioManager.Instance.PlaySound(buySound);
+            AudioManager.Instance.PlaySound(buySound, 1, true);
 
             //anim buy
             itemAnimator.SetTrigger("Buy");
@@ -127,7 +115,7 @@ public class ShopManager : MonoBehaviour
         else
         {
 
-            AudioManager.Instance.PlaySound(errorSound);
+            AudioManager.Instance.PlaySound(errorSound, 1, true);
 
             //anim no buy shake
             itemAnimator.SetTrigger("CantBuy");

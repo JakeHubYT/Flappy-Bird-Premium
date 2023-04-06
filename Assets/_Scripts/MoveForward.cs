@@ -24,7 +24,7 @@ public class MoveForward : MonoBehaviour
     void Update()
     {
         if(!stopped)
-         transform.Translate(Vector3.right * PipeSpawner.Instance.pipeSpeed * Time.deltaTime);   
+         transform.Translate(Vector3.right * PipeSpawner.Instance.GetPipeSpeed() * Time.deltaTime);   
     }
 
     void StopMoveForward()

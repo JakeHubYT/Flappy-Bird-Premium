@@ -1,124 +1,117 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-
-    static float highScore = 0;
-    public TextMeshProUGUI highScoreText;
-
-
-    public float pipeMoveSpeed = 5;
-
-    public GameObject startGameScreen;
-    public GameObject menuUi;
-
-
+   
   
 
+    private int score = 0;
+    private bool gameStarted = false;
+    private bool gotHighScore = false;
 
-    public bool playingMusic = false;
-    public AudioClip gamePlauMusic;
+    #region SINGLETON
+    public static GameManager Instance { get; private set; }
 
-    public TextMeshProUGUI[] scoreText;
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
-    public float score;
-    bool gameStarted = false;
+    #endregion
 
-
-    bool gotHighScore= false;
-
+    #region SUBSCRIBE TO EVENTS
     private void OnEnable()
     {
         Actions.OnCollectPoint += AddToScore;
-    
-
     }
+
     private void OnDisable()
     {
         Actions.OnCollectPoint -= AddToScore;
-      
-
-
     }
-
-
-
+    #endregion
 
     private void Start()
     {
-        highScoreText.text = "HIGH SCORE = " + highScore.ToString();
-        UpdateScoreUi();
+      
+        UiManager.Instance.UpdateScoreUi(score);
 
-        startGameScreen.SetActive(true);
+        UiManager.Instance.EnableStartScreen();
         Time.timeScale = 0;
         gotHighScore = false;
-
     }
 
     private void Update()
     {
-        #region Commands
+        HandleInput();
+        UpdateHighScore();
+    }
 
-        if(Input.GetKeyDown(KeyCode.R)) 
+    private void HandleInput()
+    {
+        if (!gameStarted && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0)))
         {
-            highScore = 0;
+            StartGame();
         }
+    }
 
-        #endregion
+    private void StartGame()
+    {
+        gameStarted = true;
+        UiManager.Instance.DisableStartScreen();
 
-        if (highScore < score)
+        Time.timeScale = 1;
+    }
+
+    #region Score Managment
+    private void UpdateHighScore()
+    {
+        if (score > PlayerPrefs.GetInt("HighScore", 0))
         {
-            highScore = score;
-            highScoreText.text = "HIGH SCORE = " + highScore.ToString();
+            PlayerPrefs.SetInt("HighScore", score);
 
-            if(!gotHighScore) 
+
+            UiManager.Instance.UpdateHighScoreUi();
+
+            if (!gotHighScore)
             {
-                gotHighScore= true;
+                gotHighScore = true;
                 Actions.OnNewHighScore();
             }
-            //new High Score effects
-            //play particles
-        }
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0) && !gameStarted)
-        {
-            startGameScreen.SetActive(false);
-            Time.timeScale = 1;
-        }
-
-        if (!menuUi.gameObject.activeSelf && playingMusic == false) 
-        {
-            AudioManager.Instance.PlayMusic(gamePlauMusic);
-            playingMusic = true;
-        }
-        else if (menuUi.gameObject.activeSelf && playingMusic == true) 
-        {
-            playingMusic = false;
-            AudioManager.Instance.FadeOut(3);
-           
+            // TODO: Trigger new high score effects (e.g. particles)
         }
     }
-    void AddToScore()
+
+    private void AddToScore()
     {
         score++;
-        UpdateScoreUi();
+        UiManager.Instance.UpdateScoreUi(score);
     }
 
-    void UpdateScoreUi()
+    #endregion
+
+
+    #region Scene Stuff
+    public void ReplayGame()
     {
-        for (int i = 0; i < scoreText.Length; i++)
-        {
-            scoreText[i].text = score.ToString();
-        }
-      
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-  
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 
-
-
+    #endregion
 }

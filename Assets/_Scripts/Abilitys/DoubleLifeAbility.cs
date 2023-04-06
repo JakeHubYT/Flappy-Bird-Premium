@@ -12,9 +12,16 @@ public class DoubleLifeAbility : Ability
         Actions.OnDoubleLife();
     }
 
-    public override void Deactivate()
+    public override void CallOnlyWhenAbilityEnds()
     {
         
+    }
+
+    public override void ResetAbilityValuesAnyTime()
+    {
+
+        
+
     }
 
 }

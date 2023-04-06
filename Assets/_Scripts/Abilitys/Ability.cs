@@ -18,7 +18,8 @@ public class Ability : ScriptableObject
 
     public virtual void Activate() { }
 
-    public virtual void Deactivate() { }
+    public virtual void CallOnlyWhenAbilityEnds() { }
 
+    public virtual void ResetAbilityValuesAnyTime() { }
     
 }

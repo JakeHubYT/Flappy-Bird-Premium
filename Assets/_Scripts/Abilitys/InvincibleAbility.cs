@@ -12,9 +12,18 @@ public class InvincibleAbility : Ability
         Actions.OnInvulnerable();
     }
 
-    public override void Deactivate()
+    //for reseting specific to when ability ends
+    public override void CallOnlyWhenAbilityEnds()
+    {
+      
+    }
+
+    //for reseting basic values 
+    public override void ResetAbilityValuesAnyTime()
     {
         Actions.OnVulnerable();
+
     }
+
 
 }

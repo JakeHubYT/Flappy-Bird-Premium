@@ -106,7 +106,7 @@ public class AbilityManager2 : MonoBehaviour
         {
             Debug.Log("Ability Deactivated");
 
-            currentAbility.Deactivate();
+            currentAbility.CallOnlyWhenAbilityEnds();
             usedAbility = false;
 
 
@@ -143,7 +143,7 @@ public class AbilityManager2 : MonoBehaviour
 
     void DeactivateAbility()
     {
-        currentAbility.Deactivate();
+        currentAbility.CallOnlyWhenAbilityEnds();
 
 
     }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DamagePlayer : MonoBehaviour
@@ -7,84 +5,70 @@ public class DamagePlayer : MonoBehaviour
     public GameObject pipePart;
     public GameObject particles;
 
-    public AudioClip hitMetal;
 
+    private bool canDamage = true;
 
- 
-   
-private void Start()
+    private void Start()
     {
-        if(pipePart == null ) { return; }
+        if (pipePart == null)
+        {
+            return;
+        }
+
         pipePart.SetActive(true);
         particles.SetActive(false);
-
-    }
-    private void OnTriggerEnter(Collider collision)
-    {
-        
-
-
-        if (collision.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
-        {
-          
-                Actions.OnPlayerDeath();
-
-        }
-        else if (collision.gameObject.tag == "Player" && !PipeSpawner.Instance.canDamage && gameObject.tag == "Pipe")
-        {
-            pipePart.SetActive(false);
-            particles.SetActive(true);
-            AudioManager.Instance.PlaySound(hitMetal, 1, true);
-        }
-
+     
     }
 
-    private void OnTriggerStay(Collider other)  
+
+    private void Update()
     {
+        canDamage = PipeSpawner.Instance.GetCanDamage();
+    }
 
-       
-
-        if (other.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && canDamage)
         {
-
             Actions.OnPlayerDeath();
-
         }
-        else if (other.gameObject.tag == "Player" && !PipeSpawner.Instance.canDamage && gameObject.tag == "Pipe")
+        else if (other.CompareTag("Player") && !canDamage && gameObject.CompareTag("Pipe"))
         {
             pipePart.SetActive(false);
             particles.SetActive(true);
+            AudioManager.Instance.PlaySound(AudioManager.Instance.hitMetal, 1);
+        }
+    }
 
-         
-
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player") && canDamage)
+        {
+            Actions.OnPlayerDeath();
+        }
+        else if (other.CompareTag("Player") && !canDamage && gameObject.CompareTag("Pipe"))
+        {
+            pipePart.SetActive(false);
+            particles.SetActive(true);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        
-
-
-        if (other.gameObject.tag == "Player" && !PipeSpawner.Instance.canDamage && gameObject.tag == "Pipe")
+        if (other.CompareTag("Player") && !canDamage && gameObject.CompareTag("Pipe"))
         {
             pipePart.SetActive(false);
             particles.SetActive(true);
-
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-       
-
-        if (collision.gameObject.tag == "Player" && PipeSpawner.Instance.canDamage)
+        if (collision.gameObject.CompareTag("Player") && canDamage)
         {
-
             Actions.OnPlayerDeath();
-
         }
     }
-
-   
 }
+
 

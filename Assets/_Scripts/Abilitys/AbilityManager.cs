@@ -25,6 +25,7 @@ public class AbilityManager : MonoBehaviour
     public AudioClip powerUpStartSound;
     public AudioClip powerUpContinueSound;
 
+
     bool enteredReady = true;
 
 
@@ -42,10 +43,13 @@ public class AbilityManager : MonoBehaviour
     private void OnEnable()
     {
         Actions.OnPlayerDeath += StopMusic;
+        
+
     }
     private void OnDisable()
     {
         Actions.OnPlayerDeath -= StopMusic;
+
 
     }
     private void Awake()
@@ -75,9 +79,11 @@ public class AbilityManager : MonoBehaviour
             case AbilityState.Active:
                 HandleActiveState();
                 break;
-            case AbilityState.Deactive:
+
+
+          /*  case AbilityState.Deactive:
                 HandleDeactiveState();
-                break;
+                break;*/
         }
     }
 
@@ -88,7 +94,7 @@ public class AbilityManager : MonoBehaviour
         if (enteredReady)
         {
             abilityUI.SetActive(true);
-            DeactivateAbility();
+            ResetAbilityValuesAnyTime();
             UpdateSliderUi();
             ResetUiColor();
             enteredReady = false;
@@ -110,7 +116,7 @@ public class AbilityManager : MonoBehaviour
                 currentAbility.Activate();
                 powerUpAnim.SetBool("Activate", true);
                 AudioManager.Instance.PlaySound(powerUpStartSound);
-                AudioManager.Instance.PlayMusic(powerUpContinueSound, true, true, .5f);
+                AudioManager.Instance.PlayMusic(powerUpContinueSound, true,true, .5f);
 
 
 
@@ -133,7 +139,7 @@ public class AbilityManager : MonoBehaviour
         {
             if (elapsed > currentAbility.coolDownTime)
             {
-                DeactivateAbility();
+                ResetAbilityValuesAnyTime();
                 GreyOutUI();
                 elapsed = 0;
                 canActivate = true;
@@ -143,51 +149,57 @@ public class AbilityManager : MonoBehaviour
         {
             if (elapsed > currentAbility.DeactiveTime)
             {
-                DeactivateAbility();
+                //i call this everywhere because its suppose to just reset back to normal values but sometimes i want somethin different to happen on ability end
+                ResetAbilityValuesAnyTime();
                 UpdateSliderUi();
                 ResetUiColor();
                 elapsed = 0;
                 canActivate = false;
+                ResetOnlyOnAbilityEnd();
                 abilityState = AbilityState.Ready;
             }
         }
     }
 
-    private void HandleDeactiveState()
+   /* private void HandleDeactiveState()
     {
         Debug.Log("Ability Deactivated");
-        currentAbility.Deactivate();
+        ResetOnlyOnAbilityEnd();
         abilityState = AbilityState.Ready;
      
 
-    }
+    }*/
 
-    public void EquipAbility(Ability abilityToEquip)
-    {
-        currentAbility = abilityToEquip;
-        Debug.Log("equipping " + abilityToEquip);
-        UpdateSliderUi();
-    }
+   
 
-    private void GreyOutUI()
+    private void ResetAbilityValuesAnyTime()
     {
-        var abilIcon = abilityUI.GetComponent<Image>();
-        abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, .25f);
-    }
-
-    private void ResetUiColor()
-    {
-        var abilIcon = abilityUI.GetComponent<Image>();
-        abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, 1);
-    }
-
-    private void DeactivateAbility()
-    {
-        currentAbility.Deactivate();
+        currentAbility.ResetAbilityValuesAnyTime();
         powerUpAnim.SetBool("Activate", false);
         AudioManager.Instance.FadeOut(1, true);
 
     }
+
+    void ResetOnlyOnAbilityEnd()
+    {
+        Debug.Log("InResetAbility");
+        currentAbility.CallOnlyWhenAbilityEnds();
+        Debug.Log("OutResetAbility");
+
+
+    }
+
+
+
+
+    #region NOT RELATED TO THE MAIN FUNCTION OF THIS SCRIPT
+
+    void StopMusic()
+    {
+        AudioManager.Instance.FadeOut(1, true);
+
+    }
+
 
     public void ResetState()
     {
@@ -205,9 +217,27 @@ public class AbilityManager : MonoBehaviour
         abilitySlider.value = abilitySlider.maxValue;
     }
 
-    void StopMusic()
+    private void GreyOutUI()
     {
-        AudioManager.Instance.FadeOut(1, true);
-
+        var abilIcon = abilityUI.GetComponent<Image>();
+        abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, .25f);
     }
+
+    private void ResetUiColor()
+    {
+        var abilIcon = abilityUI.GetComponent<Image>();
+        abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, 1);
+    }
+
+    public void EquipAbility(Ability abilityToEquip)
+    {
+        currentAbility = abilityToEquip;
+        Debug.Log("equipping " + abilityToEquip);
+        UpdateSliderUi();
+    }
+
+
+
+
+    #endregion
 }

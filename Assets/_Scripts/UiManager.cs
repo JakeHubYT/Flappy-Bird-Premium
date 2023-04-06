@@ -1,11 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class UiManager : MonoBehaviour
 {
     public GameObject deathScreen;
+    public TextMeshProUGUI[] scoreText;
+    [SerializeField] private TextMeshProUGUI highScoreText = null;
+    [SerializeField] private GameObject startGameScreen = null;
+
+    public static UiManager Instance { get; private set; }
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void OnEnable()
     {
@@ -19,25 +37,49 @@ public class UiManager : MonoBehaviour
     private void Start()
     {
         DisableDeathScreen();
+
+       
+    }
+
+    public void UpdateHighScoreUi()
+    {
+        highScoreText.text = "HIGH SCORE = " + PlayerPrefs.GetInt("HighScore", 0).ToString();
     }
 
     void EnableDeathScreen()
     {
-        deathScreen.SetActive(true);
+        if (deathScreen != null)
+        {
+            deathScreen.SetActive(true);
+        }
     }
 
     void DisableDeathScreen()
     {
-        deathScreen.SetActive(false);
+        if (deathScreen != null)
+        {
+            deathScreen.SetActive(false);
+        }
 
     }
 
-    public void ReplayGame()
+    public void UpdateScoreUi(float score)
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        for (int i = 0; i < scoreText.Length; i++)
+        {
+            scoreText[i].text = score.ToString();
+        }
+
     }
-    public void QuiitGame()
+
+
+    public void EnableStartScreen()
     {
-        Application.Quit();
+        startGameScreen.SetActive(true);
+    }
+
+    public void DisableStartScreen()
+    {
+        startGameScreen.SetActive(false);
     }
 }

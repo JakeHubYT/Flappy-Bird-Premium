@@ -13,9 +13,16 @@ public class SkipStartAbility : Ability
         Actions.OnSkipStart();  
     }
 
-    public override void Deactivate()
+    public override void CallOnlyWhenAbilityEnds()
     {
         Actions.OnSkipStartEnd();
+    }
+
+    public override void ResetAbilityValuesAnyTime()
+    {
+     
+        Actions.OnSkipStartResetValues();
+
     }
 
 }

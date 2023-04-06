@@ -13,10 +13,15 @@ public class DoubleCoinsAbility : Ability
         Actions.OnDoubleCoins();
     }
 
-    public override void Deactivate()
+    public override void CallOnlyWhenAbilityEnds()
+    {
+       
+
+    }
+
+    public override void ResetAbilityValuesAnyTime()
     {
         Actions.OnDoubleCoinsEnd();
-
     }
 
 }

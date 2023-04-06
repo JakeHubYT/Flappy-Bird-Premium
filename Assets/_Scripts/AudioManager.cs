@@ -4,18 +4,17 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
-  
-    public AudioSource musicSource;
-    public AudioSource longSFXSource;
-    public AudioSource sfxSource;
-    public AudioSource sfxSecondarySource;
+
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource longSFXSource;
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioSource sfxSecondarySource;
+
+    [SerializeField] public AudioClip hitMetal;
 
 
-    bool playingMusic = false;
-
-
-    float startVolume;
-    public Coroutine fadeCoroutine;
+    private Coroutine fadeCoroutine;
+    private bool playingMusic;
 
     private void Awake()
     {
@@ -28,32 +27,25 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-       
-        startVolume = musicSource.volume;
-
+        playingMusic = false;
     }
 
-    public void PlaySound(AudioClip clip, float pitch = 1, bool audioSource2 = false)
+    public void PlaySound(AudioClip clip, float pitch = 1, bool useSecondarySource = false)
     {
-        if(!audioSource2)
+        var source = useSecondarySource ? sfxSecondarySource : sfxSource;
+
+        if (fadeCoroutine != null)
         {
-            sfxSource.PlayOneShot(clip);
-            sfxSource.pitch = pitch;
-        }
-        else if (audioSource2)
-        {
-            sfxSecondarySource.PlayOneShot(clip);
-            sfxSecondarySource.pitch = pitch;
+            StopCoroutine(fadeCoroutine);
         }
 
+        source.PlayOneShot(clip);
+        source.pitch = pitch;
     }
 
-    public void PlayMusic(AudioClip clip, bool sFX = false, bool loop = false, float volume = 1)
+    public void PlayMusic(AudioClip clip, bool isSFX = false, bool loop = false, float volume = 1)
     {
-        AudioSource thisSource;
-        if (sFX == true) { thisSource = longSFXSource; }
-        else { thisSource = musicSource; }
-     
+        var source = isSFX ? longSFXSource : musicSource;
 
         if (fadeCoroutine != null)
         {
@@ -62,49 +54,38 @@ public class AudioManager : MonoBehaviour
 
         playingMusic = true;
 
-        thisSource.volume = 0;
-
-        thisSource.volume = volume;
-        thisSource.clip = clip;
-        thisSource.loop = loop;
-        thisSource.Play();
-
+        source.volume = 0;
+        source.volume = volume;
+        source.clip = clip;
+        source.loop = loop;
+        source.Play();
     }
 
     public void StopMusic()
     {
         playingMusic = false;
-
         musicSource.Stop();
     }
 
-    public void FadeOut(float duration, bool sFX = false)
+    public void FadeOut(float duration, bool isSFX = false)
     {
-        AudioSource thisSource;
-
-        if (sFX == true) { thisSource = longSFXSource; }
-        else { thisSource = musicSource; }
-
-      //  Debug.Log("Fading");
+        var source = isSFX ? longSFXSource : musicSource;
 
         playingMusic = false;
-
-
-        StartCoroutine(FadeOutCoroutine(duration, thisSource));
-
 
         if (fadeCoroutine != null)
         {
             StopCoroutine(fadeCoroutine);
         }
+
+        fadeCoroutine = StartCoroutine(FadeOutCoroutine(duration, source));
     }
 
     private IEnumerator FadeOutCoroutine(float duration, AudioSource sourceToFade)
     {
+        if (playingMusic) { yield break; }
 
-         if(playingMusic) { yield break; }
-
-        startVolume = sourceToFade.volume;
+        var startVolume = sourceToFade.volume;
 
         while (sourceToFade.volume > 0)
         {
@@ -117,6 +98,9 @@ public class AudioManager : MonoBehaviour
         sourceToFade.Stop();
         sourceToFade.volume = startVolume;
     }
+
+    public void PlayHitMetalSound()
+    {
+        PlaySound(hitMetal);
+    }
 }
-
-

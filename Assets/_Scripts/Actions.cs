@@ -19,7 +19,10 @@ public static class Actions
 
     public static Action OnSkipStart;
 
+    public static Action OnSkipStartResetValues;
+
     public static Action OnSkipStartEnd;
+
 
     public static Action OnDoubleCoins;
 

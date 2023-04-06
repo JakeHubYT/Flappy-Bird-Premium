@@ -13,7 +13,7 @@ public class FastFallAbility : Ability
         Actions.OnFastFall();
     }
 
-    public override void Deactivate()
+    public override void CallOnlyWhenAbilityEnds()
     {
         
     }
