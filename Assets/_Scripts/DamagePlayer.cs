@@ -23,14 +23,14 @@ public class DamagePlayer : MonoBehaviour
 
     private void Update()
     {
-        canDamage = PipeSpawner.Instance.GetCanDamage();
+        canDamage = PipeManager.Instance.GetCanDamage();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && canDamage)
         {
-            Actions.OnPlayerDeath();
+            TriggerPlayerDeath();
         }
         else if (other.CompareTag("Player") && !canDamage && gameObject.CompareTag("Pipe"))
         {
@@ -44,7 +44,7 @@ public class DamagePlayer : MonoBehaviour
     {
         if (other.CompareTag("Player") && canDamage)
         {
-            Actions.OnPlayerDeath();
+            TriggerPlayerDeath();
         }
         else if (other.CompareTag("Player") && !canDamage && gameObject.CompareTag("Pipe"))
         {
@@ -66,8 +66,13 @@ public class DamagePlayer : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player") && canDamage)
         {
-            Actions.OnPlayerDeath();
+            TriggerPlayerDeath();
         }
+    }
+
+    void TriggerPlayerDeath()
+    {
+        Actions.OnDamagePlayer();
     }
 }
 

@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody rb;
     public AudioClip flapSound;
-    public AudioClip dieSound;
+
     public Transform skinHolder;
 
     public float jumpForce = 5f;
@@ -17,17 +17,13 @@ public class PlayerMovement : MonoBehaviour
     bool flap = false;
     bool canFastFall = false;
 
-private void OnEnable()
+    private void OnEnable()
     {
-        Actions.OnPlayerDeath += KillPlayer;
         Actions.OnFastFall += FastFall;
     }
     private void OnDisable()
     {
-        Actions.OnPlayerDeath -= KillPlayer;
         Actions.OnFastFall -= FastFall;
-
-
     }
 
     private void Start()
@@ -82,13 +78,7 @@ private void OnEnable()
 
     }
 
-    public void KillPlayer()
-    {
-
-        gameObject.SetActive(false);
-        AudioManager.Instance.PlaySound(dieSound);
-
-    }
+ 
 
     public void FastFall()
     {

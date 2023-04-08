@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea69535bd4602834f957d896091f7afa, type: 3}
   m_Name: Double Life Ability
   m_EditorClassIdentifier: 
+  activateOnStart: 1
   name: Double Life Ability
-  coolDownTime: Infinity
-  DeactiveTime: 0
+  coolDownTime: -1
+  DeactiveTime: 5

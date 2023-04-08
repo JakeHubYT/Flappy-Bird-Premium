@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class PipeSpawner : MonoBehaviour
+public class PipeManager : MonoBehaviour
 {
     [SerializeField] private GameObject pipe;
     [SerializeField] private Transform pipeSpawnPos;
@@ -9,13 +9,13 @@ public class PipeSpawner : MonoBehaviour
     [Header("Difficulty Metrics")]
     [SerializeField] private float startInterval = 2f;
     [SerializeField] private float minInterval = 1f;
-    [SerializeField] private float intervalDecreaseRate = 0.1f;
+    [SerializeField] private float intervalDecreaseRate = 0.01f;
     [SerializeField] private bool spawnOnStart = true;
 
-    [SerializeField] private float startPipeRanY = 3.5f;
+    [SerializeField] private float startPipeRanY = 10f;
     [SerializeField] private float currentPipeRanY = 3.5f;
-    [SerializeField] private float minCurrentPipeRanY = 0.5f;
-    [SerializeField] private float pipeSpeed = 8f;
+    [SerializeField] private float minCurrentPipeRanY = .75f;
+    [SerializeField] private float pipeSpeed = 10f;
     [SerializeField] private float currentInterval;
 
     private bool canDamage = true;
@@ -28,7 +28,7 @@ public class PipeSpawner : MonoBehaviour
     private Coroutine thisRoutine;
  
 
-    public static PipeSpawner Instance { get; private set; }
+    public static PipeManager Instance { get; private set; }
 
 
     #region Getters
@@ -130,10 +130,6 @@ public class PipeSpawner : MonoBehaviour
 
     private void SpawnPipe()
     {
-        /*float ranY = Random.Range(-pipeRanY, pipeRanY);
-        Vector3 pipeRanSpawn = new Vector3(pipeSpawnPos.position.x, ranY, pipeSpawnPos.position.z);
-        Instantiate(pipe, pipeRanSpawn, Quaternion.identity);*/
-
         float ranYScale = Mathf.Clamp(1f / currentInterval, 0.5f, 1f);
         float ranY = Random.Range(-currentPipeRanY * ranYScale, currentPipeRanY * ranYScale);
         Vector3 pipeRanSpawn = new Vector3(pipeSpawnPos.position.x, ranY, pipeSpawnPos.position.z);
@@ -148,7 +144,7 @@ public class PipeSpawner : MonoBehaviour
 
             yield return new WaitForSeconds(delay);
 
-            Debug.Log("Calling On Vulnerable");
+           // Debug.Log("Calling On Vulnerable");
             Actions.OnVulnerable();
         }
     }
@@ -178,11 +174,9 @@ public class PipeSpawner : MonoBehaviour
         thisRoutine = StartCoroutine(StartVulnerableTimer(AbilityManager.currentAbility.coolDownTime + 2));
 
     }
-
     void ResetPipesToStartValues()
     {
         pipeSpeed = ogPipeSpeed;
-       // currentInterval = 1.2f;
     }
 
     void SlowPipes()
@@ -191,7 +185,6 @@ public class PipeSpawner : MonoBehaviour
         pipeSpeed = ogPipeSpeed;
         currentInterval = 1.2f;
     }
-
 
 
 }

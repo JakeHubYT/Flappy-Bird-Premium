@@ -9,7 +9,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource longSFXSource;
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource sfxSecondarySource;
-
+    [SerializeField] public AudioClip dieSound;
     [SerializeField] public AudioClip hitMetal;
 
 
@@ -29,6 +29,19 @@ public class AudioManager : MonoBehaviour
 
         playingMusic = false;
     }
+
+
+    private void OnEnable()
+    {
+        Actions.OnPlayerDeath += StopVfx;
+    }
+    private void OnDisable()
+    {
+        Actions.OnPlayerDeath -= StopVfx;
+
+    }
+
+
 
     public void PlaySound(AudioClip clip, float pitch = 1, bool useSecondarySource = false)
     {
@@ -102,5 +115,10 @@ public class AudioManager : MonoBehaviour
     public void PlayHitMetalSound()
     {
         PlaySound(hitMetal);
+    }
+
+    void StopVfx()
+    {
+        FadeOut(1, true);
     }
 }

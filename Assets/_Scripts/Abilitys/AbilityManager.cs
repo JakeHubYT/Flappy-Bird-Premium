@@ -6,6 +6,7 @@ using System.Timers;
 using Unity.VisualScripting;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using UnityEngine.PlayerLoop;
 
 public enum AbilityState
 {
@@ -16,10 +17,8 @@ public enum AbilityState
 
 public class AbilityManager : MonoBehaviour
 {
-
     public static Ability currentAbility;
     public GameObject abilityUI;
-    public Slider abilitySlider;
     public Animator powerUpAnim;
 
     public AudioClip powerUpStartSound;
@@ -31,27 +30,14 @@ public class AbilityManager : MonoBehaviour
 
     public static AbilityManager Instance { get; private set; }
 
-    private AbilityState abilityState;
+    public AbilityState abilityState;
 
     // time that's passed
-    private float elapsed;
+    public float elapsed;
 
     private bool canActivate = false;
     public bool tookDamage = false;
     
-
-    private void OnEnable()
-    {
-        Actions.OnPlayerDeath += StopMusic;
-        
-
-    }
-    private void OnDisable()
-    {
-        Actions.OnPlayerDeath -= StopMusic;
-
-
-    }
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -63,9 +49,12 @@ public class AbilityManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        if (currentAbility.activateOnStart)
+        {
+            ActivateAbility();
+        }
         abilityState = AbilityState.Ready;
-        UpdateSliderUi();
-
+        UiManager.Instance.UpdateSliderUi(currentAbility.coolDownTime);
 
     }
 
@@ -81,9 +70,9 @@ public class AbilityManager : MonoBehaviour
                 break;
 
 
-          /*  case AbilityState.Deactive:
+            case AbilityState.Deactive:
                 HandleDeactiveState();
-                break;*/
+                break;
         }
     }
 
@@ -95,111 +84,70 @@ public class AbilityManager : MonoBehaviour
         {
             abilityUI.SetActive(true);
             ResetAbilityValuesAnyTime();
-            UpdateSliderUi();
-            ResetUiColor();
+            UiManager.Instance.UpdateSliderUi(currentAbility.coolDownTime);
+            UiManager.Instance.ResetUiColor(abilityUI);
             enteredReady = false;
         }
-     
-     
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            if (currentAbility == null)
-            {
-                Debug.Log("No Ability Equipped");
-            }
-            else
-            {
-                Debug.Log("Ability Used");
 
+            ActivateAbility();
+            abilityState = AbilityState.Active;
 
-                currentAbility.Activate();
-                powerUpAnim.SetBool("Activate", true);
-                AudioManager.Instance.PlaySound(powerUpStartSound);
-                AudioManager.Instance.PlayMusic(powerUpContinueSound, true,true, .5f);
-
-
-
-
-                elapsed = 0;
-                abilitySlider.value = abilitySlider.maxValue;
-                abilityState = AbilityState.Active;
-            }
         }
-
-        
     }
 
     private void HandleActiveState()
     {
         elapsed += Time.deltaTime;
-        abilitySlider.value -= Time.deltaTime;
 
-        if (!canActivate)
+        UiManager.Instance.DecreaseAbilitySlider();
+
+        Debug.Log("in active state");
+
+
+        if (elapsed > currentAbility.coolDownTime)
         {
-            if (elapsed > currentAbility.coolDownTime)
-            {
-                ResetAbilityValuesAnyTime();
-                GreyOutUI();
-                elapsed = 0;
-                canActivate = true;
-            }
-        }
-        else if (canActivate)
-        {
-            if (elapsed > currentAbility.DeactiveTime)
-            {
-                //i call this everywhere because its suppose to just reset back to normal values but sometimes i want somethin different to happen on ability end
-                ResetAbilityValuesAnyTime();
-                UpdateSliderUi();
-                ResetUiColor();
-                elapsed = 0;
-                canActivate = false;
-                ResetOnlyOnAbilityEnd();
-                abilityState = AbilityState.Ready;
-            }
+            Debug.Log("in countdown");
+            // called when ability ends
+            ResetAbilityValuesAnyTime();
+            UiManager.Instance.GreyOutUI(abilityUI);
+
+            elapsed = 0;
+            abilityState = AbilityState.Deactive;
         }
     }
 
-   /* private void HandleDeactiveState()
+    private void HandleDeactiveState()
     {
-        Debug.Log("Ability Deactivated");
-        ResetOnlyOnAbilityEnd();
-        abilityState = AbilityState.Ready;
-     
+        elapsed += Time.deltaTime;
 
-    }*/
 
-   
+        if (elapsed > currentAbility.DeactiveTime)
+        {
+            // called when deactive ends
+            ResetAbilityValuesAnyTime();
+            UiManager.Instance.UpdateSliderUi(currentAbility.coolDownTime);
+            UiManager.Instance.ResetUiColor(abilityUI);
 
-    private void ResetAbilityValuesAnyTime()
+            elapsed = 0;
+            abilityState = AbilityState.Ready;
+            ResetOnlyOnAbilityEnd();
+        }
+    }
+
+    public void ResetAbilityValuesAnyTime()
     {
         currentAbility.ResetAbilityValuesAnyTime();
         powerUpAnim.SetBool("Activate", false);
         AudioManager.Instance.FadeOut(1, true);
-
     }
 
     void ResetOnlyOnAbilityEnd()
     {
-        Debug.Log("InResetAbility");
         currentAbility.CallOnlyWhenAbilityEnds();
-        Debug.Log("OutResetAbility");
-
-
     }
-
-
-
-
-    #region NOT RELATED TO THE MAIN FUNCTION OF THIS SCRIPT
-
-    void StopMusic()
-    {
-        AudioManager.Instance.FadeOut(1, true);
-
-    }
-
 
     public void ResetState()
     {
@@ -207,37 +155,32 @@ public class AbilityManager : MonoBehaviour
         enteredReady = true;
     }
 
-    private void UpdateSliderUi()
-    {
-        if(abilitySlider == null) { return; }
-        if (currentAbility == null) { return; }
-
-
-        abilitySlider.maxValue = currentAbility.coolDownTime;
-        abilitySlider.value = abilitySlider.maxValue;
-    }
-
-    private void GreyOutUI()
-    {
-        var abilIcon = abilityUI.GetComponent<Image>();
-        abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, .25f);
-    }
-
-    private void ResetUiColor()
-    {
-        var abilIcon = abilityUI.GetComponent<Image>();
-        abilIcon.color = new Color(abilIcon.color.r, abilIcon.color.g, abilIcon.color.b, 1);
-    }
-
     public void EquipAbility(Ability abilityToEquip)
     {
         currentAbility = abilityToEquip;
         Debug.Log("equipping " + abilityToEquip);
-        UpdateSliderUi();
+        UiManager.Instance.UpdateSliderUi(currentAbility.coolDownTime);
+    }
+
+    void ActivateAbility()
+    {
+        Debug.Log("Ability Used");
+
+        currentAbility.Activate();
+        powerUpAnim.SetBool("Activate", true);
+        AudioManager.Instance.PlaySound(powerUpStartSound);
+        AudioManager.Instance.PlayMusic(powerUpContinueSound, true, true, .5f);
+
+        elapsed = 0;
+        UiManager.Instance.UpdateSliderUi(currentAbility.coolDownTime);
+      
+    }
+
+    public void SetToActiveState()
+    {
+        abilityState = AbilityState.Active;
+
     }
 
 
-
-
-    #endregion
 }

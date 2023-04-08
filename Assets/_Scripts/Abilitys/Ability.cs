@@ -5,15 +5,15 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Ability : ScriptableObject
 {
+    public bool activateOnStart = false;
+
     public new string name;
 
     public float coolDownTime;
 
     public float DeactiveTime;
 
-   
-
-   
+  
 
 
     public virtual void Activate() { }

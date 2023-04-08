@@ -23,12 +23,13 @@ public static class Actions
 
     public static Action OnSkipStartEnd;
 
-
     public static Action OnDoubleCoins;
 
     public static Action OnDoubleCoinsEnd;
 
     public static Action OnDoubleLife;
+
+    public static Action OnDamagePlayer;
 
 
 }

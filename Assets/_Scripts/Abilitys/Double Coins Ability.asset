@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7bf34f9e0e3181489f9c757913b64d1, type: 3}
   m_Name: Double Coins Ability
   m_EditorClassIdentifier: 
+  activateOnStart: 1
   name: Double Coins Ability
   coolDownTime: Infinity
   DeactiveTime: 0

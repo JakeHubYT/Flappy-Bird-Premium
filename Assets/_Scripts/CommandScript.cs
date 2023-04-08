@@ -24,7 +24,7 @@ public class CommandScript : MonoBehaviour
 
     public void KillPlayer()
     {
-        Actions.OnPlayerDeath();
+        Actions.OnDamagePlayer();
     }
 
     public void ToggleInvincibility()

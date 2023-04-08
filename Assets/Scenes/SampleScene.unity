@@ -537,13 +537,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 28143806}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2051567199}
-  m_RootOrder: 0
+  m_Father: {fileID: 315496718}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &28143808
 MonoBehaviour:
@@ -6782,7 +6782,7 @@ GameObject:
   - component: {fileID: 156722292}
   - component: {fileID: 156722293}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Ability Slider Ui
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8369,8 +8369,9 @@ Transform:
   - {fileID: 1897454676}
   - {fileID: 1248290907}
   - {fileID: 2051567199}
-  - {fileID: 360012918}
+  - {fileID: 28143807}
   - {fileID: 1794739660}
+  - {fileID: 360012918}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14030,7 +14031,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 315496718}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &360012919
 MonoBehaviour:
@@ -14952,6 +14953,7 @@ GameObject:
   - component: {fileID: 486749663}
   - component: {fileID: 486749662}
   - component: {fileID: 486749661}
+  - component: {fileID: 486749667}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -14973,7 +14975,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 486749662}
   flapSound: {fileID: 8300000, guid: 652ba9397e26ac24a8ebdd7ed78447b1, type: 3}
-  dieSound: {fileID: 8300000, guid: 823fd980fa96a854b99d5d4c7fec3c19, type: 3}
   skinHolder: {fileID: 2054503517}
   jumpForce: 6
   anim: {fileID: 0}
@@ -15074,6 +15075,19 @@ Transform:
   m_Father: {fileID: 1164016837}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &486749667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486749660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50f1ec56e85d9df438eaa78a78ffeb65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasDoubleLife: 0
 --- !u!1001 &496888738
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32181,18 +32195,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1021667138}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b986f7a07a5ef4e4e95577b3a98aa0ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 7789b9d0b59039043962288d56e6743b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pipe: {fileID: 7858609833433463762, guid: eeb233f4651fbbb42831a2f4332263d2, type: 3}
   pipeSpawnPos: {fileID: 975665957}
   startInterval: 2
-  minInterval: 0.75
-  intervalDecreaseRate: 0.015
+  minInterval: 0.5
+  intervalDecreaseRate: 0.01
   spawnOnStart: 1
   startPipeRanY: 10
   currentPipeRanY: 3.5
-  minCurrentPipeRanY: 2
+  minCurrentPipeRanY: 1
   pipeSpeed: 10
   currentInterval: 0
   speedUpPipes: 0
@@ -50284,11 +50298,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilityUI: {fileID: 321633971}
-  abilitySlider: {fileID: 156722293}
   powerUpAnim: {fileID: 238761329}
   powerUpStartSound: {fileID: 8300000, guid: 52ac6d1ad272b3d409aafc7315685011, type: 3}
   powerUpContinueSound: {fileID: 8300000, guid: 2b1da8ff2d5b5144db6aed7180db22e7,
     type: 3}
+  abilityState: 0
+  elapsed: 0
   tookDamage: 0
 --- !u!1 &1795755090
 GameObject:
@@ -51143,6 +51158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathScreen: {fileID: 154867800}
+  abilitySlider: {fileID: 156722293}
   scoreText:
   - {fileID: 516374162}
   - {fileID: 1642169783}
@@ -57170,8 +57186,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 28143807}
+  m_Children: []
   m_Father: {fileID: 315496718}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -57191,6 +57206,7 @@ MonoBehaviour:
   longSFXSource: {fileID: 2051567204}
   sfxSource: {fileID: 2051567201}
   sfxSecondarySource: {fileID: 2051567202}
+  dieSound: {fileID: 8300000, guid: 823fd980fa96a854b99d5d4c7fec3c19, type: 3}
   hitMetal: {fileID: 8300000, guid: d91fc27c02c1bc14ea18c31bb8066fbc, type: 3}
 --- !u!82 &2051567201
 AudioSource:

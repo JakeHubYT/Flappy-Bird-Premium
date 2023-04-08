@@ -4,10 +4,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
 {
     public GameObject deathScreen;
+    public Slider abilitySlider;
+
     public TextMeshProUGUI[] scoreText;
     [SerializeField] private TextMeshProUGUI highScoreText = null;
     [SerializeField] private GameObject startGameScreen = null;
@@ -82,4 +85,33 @@ public class UiManager : MonoBehaviour
     {
         startGameScreen.SetActive(false);
     }
+
+
+    public void GreyOutUI(GameObject ImageHolder)
+    {
+        Debug.Log("Greyed");
+        var icon = ImageHolder.GetComponent<Image>();
+        icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, .25f);
+    }
+
+    public void ResetUiColor(GameObject ImageHolder)
+    {
+        var icon = ImageHolder.GetComponent<Image>();
+        icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, 1);
+    }
+
+
+    public void UpdateSliderUi(float currentAbilityCoolDown)
+    {
+        if (abilitySlider == null) { return; }
+
+        abilitySlider.maxValue = currentAbilityCoolDown;
+        abilitySlider.value = abilitySlider.maxValue;
+    }
+
+    public void DecreaseAbilitySlider()
+    {
+        abilitySlider.value -= Time.deltaTime;
+    }
+
 }
