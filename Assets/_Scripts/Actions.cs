@@ -31,5 +31,11 @@ public static class Actions
 
     public static Action OnDamagePlayer;
 
+    public static Action OnClickStartScreen;
+
+    public static Action OnDirtSurf;
+
+    public static Action OnFlipGravity;
+
 
 }

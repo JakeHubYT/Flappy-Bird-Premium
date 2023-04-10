@@ -9,11 +9,15 @@ using UnityEngine.UI;
 public class UiManager : MonoBehaviour
 {
     public GameObject deathScreen;
+    public GameObject shopScreen;
+
+    public GameObject abilityUI;
     public Slider abilitySlider;
+
 
     public TextMeshProUGUI[] scoreText;
     [SerializeField] private TextMeshProUGUI highScoreText = null;
-    [SerializeField] private GameObject startGameScreen = null;
+    [SerializeField] public GameObject startGameScreen = null;
 
     public static UiManager Instance { get; private set; }
     private void Awake()
@@ -47,6 +51,8 @@ public class UiManager : MonoBehaviour
     public void UpdateHighScoreUi()
     {
         highScoreText.text = "HIGH SCORE = " + PlayerPrefs.GetInt("HighScore", 0).ToString();
+
+
     }
 
     void EnableDeathScreen()
@@ -100,7 +106,6 @@ public class UiManager : MonoBehaviour
         icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, 1);
     }
 
-
     public void UpdateSliderUi(float currentAbilityCoolDown)
     {
         if (abilitySlider == null) { return; }
@@ -112,6 +117,13 @@ public class UiManager : MonoBehaviour
     public void DecreaseAbilitySlider()
     {
         abilitySlider.value -= Time.deltaTime;
+    }
+
+    public void ResetAbilityUi()
+    {
+        abilityUI.SetActive(true);
+        UpdateSliderUi(AbilityManager.currentAbility.coolDownTime);
+        ResetUiColor(abilityUI);
     }
 
 }

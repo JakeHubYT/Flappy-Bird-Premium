@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08b429017c907b24ab427c05974e59ed, type: 3}
   m_Name: Invincible Ability
   m_EditorClassIdentifier: 
+  sprite: {fileID: 21300000, guid: 499606907220dc149be506c6b658dafe, type: 3}
+  activateOnStart: 0
   name: Invincible Ability
   coolDownTime: 5
   DeactiveTime: 5

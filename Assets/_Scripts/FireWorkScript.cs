@@ -7,17 +7,8 @@ public class FireWorkScript : MonoBehaviour
     public ParticleSystem[] fireWork;
     public AudioClip fireWorkSound;
 
-    private void OnEnable()
-    {
-        Actions.OnNewHighScore += StartCoroutine;
-    }
-    private void OnDisable()
-    {
-        Actions.OnNewHighScore -= StartCoroutine;
 
-    }
-
-    private void StartCoroutine()
+   /* private void StartCoroutine()
     {
         StartCoroutine(ExecuteFunctionRandomly());
     }
@@ -31,10 +22,10 @@ public class FireWorkScript : MonoBehaviour
         LaunchFireWork();
 
        // StartCoroutine(ExecuteFunctionRandomly());
-    }
+    }*/
 
 
-    void LaunchFireWork()
+    public void LaunchFireWork()
     {
 
 

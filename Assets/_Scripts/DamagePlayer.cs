@@ -7,6 +7,7 @@ public class DamagePlayer : MonoBehaviour
 
 
     private bool canDamage = true;
+  
 
     private void Start()
     {
@@ -17,9 +18,10 @@ public class DamagePlayer : MonoBehaviour
 
         pipePart.SetActive(true);
         particles.SetActive(false);
-     
+
     }
 
+   
 
     private void Update()
     {
@@ -62,18 +64,14 @@ public class DamagePlayer : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player") && canDamage)
-        {
-            TriggerPlayerDeath();
-        }
-    }
+   
 
     void TriggerPlayerDeath()
     {
         Actions.OnDamagePlayer();
     }
+
+ 
 }
 
 

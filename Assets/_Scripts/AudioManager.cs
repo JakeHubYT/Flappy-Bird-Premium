@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public AudioClip dieSound;
     [SerializeField] public AudioClip hitMetal;
 
+    public Slider volumeSlider;
 
     private Coroutine fadeCoroutine;
     private bool playingMusic;
@@ -30,17 +32,36 @@ public class AudioManager : MonoBehaviour
         playingMusic = false;
     }
 
-
     private void OnEnable()
     {
         Actions.OnPlayerDeath += StopVfx;
     }
+
     private void OnDisable()
     {
         Actions.OnPlayerDeath -= StopVfx;
-
     }
 
+    private void Start()
+    {
+        // Set the initial value of the volume slider to the current volume of the musicSource
+        volumeSlider.value = musicSource.volume;
+    }
+
+    public void UpdateMusicVolume(float volumeAmt)
+    {
+        // Update the volume of the musicSource and sfxSource based on the value of the volume slider
+        musicSource.volume = volumeAmt;
+       
+    }
+    public void UpdateSFXVolume(float volumeAmt)
+    {
+        // Update the volume of the musicSource and sfxSource based on the value of the volume slider
+      
+        sfxSource.volume = volumeAmt;
+        longSFXSource.volume = volumeAmt;
+        sfxSecondarySource.volume = volumeAmt;
+    }
 
 
     public void PlaySound(AudioClip clip, float pitch = 1, bool useSecondarySource = false)

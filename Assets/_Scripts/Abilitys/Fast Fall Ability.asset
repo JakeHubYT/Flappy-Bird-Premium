@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5eb1bc827a9b9a41ac139b2430da80a, type: 3}
   m_Name: Fast Fall Ability
   m_EditorClassIdentifier: 
+  sprite: {fileID: 21300000, guid: a9d511555de7b9843a253d004409dffc, type: 3}
+  activateOnStart: 0
   name: Fast Fall Ability
   coolDownTime: 0.5
   DeactiveTime: 5

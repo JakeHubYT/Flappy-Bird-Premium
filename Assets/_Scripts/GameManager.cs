@@ -5,10 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-   
-  
 
-    private int score = 0;
+    
+    public Animator highScoreAnim;
+
+    public AudioClip highScoreScound;
+    public int score = 0;
     private bool gameStarted = false;
     private bool gotHighScore = false;
 
@@ -43,12 +45,15 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-      
+        PlayerPrefs.SetInt("HighScore", 0);
+
+
         UiManager.Instance.UpdateScoreUi(score);
 
         UiManager.Instance.EnableStartScreen();
         Time.timeScale = 0;
         gotHighScore = false;
+  
     }
 
     private void Update()
@@ -62,6 +67,7 @@ public class GameManager : MonoBehaviour
         if (!gameStarted && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0)))
         {
             StartGame();
+            Actions.OnClickStartScreen();
         }
     }
 
@@ -69,15 +75,17 @@ public class GameManager : MonoBehaviour
     {
         gameStarted = true;
         UiManager.Instance.DisableStartScreen();
-
         Time.timeScale = 1;
     }
 
     #region Score Managment
     private void UpdateHighScore()
     {
+        
+
         if (score > PlayerPrefs.GetInt("HighScore", 0))
         {
+            Debug.Log("UpdateHighScore");
             PlayerPrefs.SetInt("HighScore", score);
 
 
@@ -86,8 +94,14 @@ public class GameManager : MonoBehaviour
             if (!gotHighScore)
             {
                 gotHighScore = true;
+                highScoreAnim.SetTrigger("HighScore");
+                AudioManager.Instance.PlaySound(highScoreScound);
                 Actions.OnNewHighScore();
+
             }
+
+           
+           
 
             // TODO: Trigger new high score effects (e.g. particles)
         }

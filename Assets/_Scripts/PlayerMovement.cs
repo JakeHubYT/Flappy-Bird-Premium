@@ -10,20 +10,25 @@ public class PlayerMovement : MonoBehaviour
     public Transform skinHolder;
 
     public float jumpForce = 5f;
+    public Animator PlayerHolderAnim;
     public Animator anim;
     public ParticleSystem dirt;
 
 
     bool flap = false;
     bool canFastFall = false;
+    bool canToggleGravity = false;
 
     private void OnEnable()
     {
         Actions.OnFastFall += FastFall;
+        Actions.OnFlipGravity += CanToggleGravity;
     }
     private void OnDisable()
     {
         Actions.OnFastFall -= FastFall;
+        Actions.OnFlipGravity -= CanToggleGravity;
+
     }
 
     private void Start()
@@ -39,6 +44,11 @@ public class PlayerMovement : MonoBehaviour
         if(dirt.isPlaying)
             dirt.Stop();
 
+
+        if(Physics.gravity.y > 0)
+        {
+            Physics.gravity = -Physics.gravity;
+        }
 
     }
 
@@ -62,8 +72,13 @@ public class PlayerMovement : MonoBehaviour
 
         anim.SetBool("FastFall", canFastFall);
 
-     
-      
+
+
+        if (Input.GetKeyDown(KeyCode.Mouse1) && canToggleGravity)
+        ToggleGravity();
+
+
+
 
     }
     private void FixedUpdate()
@@ -104,4 +119,17 @@ public class PlayerMovement : MonoBehaviour
 
         }
     }
+
+    void ToggleGravity()
+    {
+        Physics.gravity = -Physics.gravity;
+        jumpForce = -jumpForce;
+        PlayerHolderAnim.SetTrigger("Rotate");
+    }
+
+    void CanToggleGravity()
+    {
+        canToggleGravity = true;
+    }
+  
 }

@@ -30,7 +30,8 @@ public class PlayerHealth : MonoBehaviour
         if (hasDoubleLife) 
         {
             Actions.OnInvulnerable();
-            AbilityManager.Instance.SetToActiveState();
+            AbilityManager.Instance.DeactivateAbility();
+            UiManager.Instance.abilitySlider.value = 0;
             StartCoroutine(MyCoroutine(2));
             return;
         }
@@ -54,6 +55,7 @@ public class PlayerHealth : MonoBehaviour
 
         hasDoubleLife = false;
         Actions.OnVulnerable();
+      
       
         yield break;
     }

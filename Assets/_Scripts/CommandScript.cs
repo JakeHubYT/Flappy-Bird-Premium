@@ -41,4 +41,13 @@ public class CommandScript : MonoBehaviour
         }
 
     }
+
+    public void FreezeTime()
+    {
+        Time.timeScale = 0;
+    }
+    public void UnfreezeTime()
+    {
+        Time.timeScale = 1;
+    }
 }

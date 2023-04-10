@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class ShopManager : MonoBehaviour
 {
-
-
     public static int Money;
 
   
@@ -17,10 +15,6 @@ public class ShopManager : MonoBehaviour
     public AudioClip buySound;
     public AudioClip errorSound;
     public AudioClip equipSound;
-
-
-
-    public GameObject shopParent;
 
     public Transform skinParent;
     public GameManager gameManager;
