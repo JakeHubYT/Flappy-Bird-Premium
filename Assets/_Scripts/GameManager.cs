@@ -7,7 +7,9 @@ public class GameManager : MonoBehaviour
 {
 
     
-    public Animator highScoreAnim;
+    public Animator highScoreTxtAnim;
+    public Animator highScoreScreenAnim;
+
 
     public AudioClip highScoreScound;
     public int score = 0;
@@ -45,7 +47,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        PlayerPrefs.SetInt("HighScore", 0);
+       // PlayerPrefs.SetInt("HighScore", 0);
 
 
         UiManager.Instance.UpdateScoreUi(score);
@@ -60,6 +62,8 @@ public class GameManager : MonoBehaviour
     {
         HandleInput();
         UpdateHighScore();
+
+        highScoreScreenAnim.SetBool("GotHighScore", gotHighScore);
     }
 
     private void HandleInput()
@@ -81,12 +85,15 @@ public class GameManager : MonoBehaviour
     #region Score Managment
     private void UpdateHighScore()
     {
-        
+       
+
 
         if (score > PlayerPrefs.GetInt("HighScore", 0))
         {
             Debug.Log("UpdateHighScore");
+         
             PlayerPrefs.SetInt("HighScore", score);
+         
 
 
             UiManager.Instance.UpdateHighScoreUi();
@@ -94,7 +101,10 @@ public class GameManager : MonoBehaviour
             if (!gotHighScore)
             {
                 gotHighScore = true;
-                highScoreAnim.SetTrigger("HighScore");
+
+               
+
+                highScoreTxtAnim.SetTrigger("HighScore");
                 AudioManager.Instance.PlaySound(highScoreScound);
                 Actions.OnNewHighScore();
 

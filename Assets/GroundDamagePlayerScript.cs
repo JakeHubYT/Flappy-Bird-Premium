@@ -9,11 +9,15 @@ public class GroundDamagePlayerScript : MonoBehaviour
     private void OnEnable()
     {
         Actions.OnDirtSurf += CanDirtSurf;
+        Actions.OnVulnerable += GroundHurts;
+        Actions.OnInvulnerable += GroundDontHurt;
+
     }
     private void OnDisable()
     {
         Actions.OnDirtSurf -= CanDirtSurf;
-
+        Actions.OnVulnerable -= GroundHurts;
+        Actions.OnInvulnerable -= GroundDontHurt;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -27,5 +31,19 @@ public class GroundDamagePlayerScript : MonoBehaviour
     void CanDirtSurf()
     {
         groundHurtsPlayer = false;
+    }
+
+    void GroundHurts()
+    {
+        groundHurtsPlayer = true;
+
+
+    }
+
+    void GroundDontHurt()
+    {
+        groundHurtsPlayer = false;
+
+
     }
 }
