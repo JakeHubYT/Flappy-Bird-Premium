@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Skip Start Ability
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 008a6c9d009246647b0dc58839c2b884, type: 3}
-  activateOnStart: 0
+  activateOnStart: 1
   name: Skip Start Ability
   coolDownTime: 5
-  DeactiveTime: 1
+  DeactiveTime: Infinity

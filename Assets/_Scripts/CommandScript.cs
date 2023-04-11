@@ -50,4 +50,9 @@ public class CommandScript : MonoBehaviour
     {
         Time.timeScale = 1;
     }
+
+    public void ClearStats()
+    {
+        PlayerPrefs.DeleteAll();
+    }
 }

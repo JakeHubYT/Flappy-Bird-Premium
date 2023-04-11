@@ -109,7 +109,7 @@ Material:
     - _RippleDensity: 7
     - _RippleSlimness: 5
     - _RippleSpeed: 0
-    - _ScrollSpeed: 0.0142108
+    - _ScrollSpeed: 0.014997872
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

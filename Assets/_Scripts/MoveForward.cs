@@ -18,7 +18,18 @@ public class MoveForward : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        if(transform.position.y < -5)
+        {
+            Destroy(gameObject);
+        }
 
+        if (transform.position.y > 5)
+        {
+            Destroy(gameObject);
+        }
+    }
 
 
     void Update()

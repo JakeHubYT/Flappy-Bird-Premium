@@ -24,7 +24,10 @@ public class AbilityManager : MonoBehaviour
     public AudioClip powerUpStartSound;
     public AudioClip powerUpContinueSound;
 
+    
     public GameObject abilityIcon;
+    public GameObject abilityIconHolder;
+
 
     bool enteredState = true;
 
@@ -91,9 +94,11 @@ public class AbilityManager : MonoBehaviour
 
         if(currentAbility != null)
         {
-            Debug.Log(currentAbility.sprite);
+            abilityIconHolder.SetActive(true);
             abilityIcon.GetComponent<Image>().sprite = currentAbility.sprite; 
         }
+        else
+            abilityIconHolder.SetActive(false);
     }
 
     private void HandleReadyState()
@@ -144,6 +149,7 @@ public class AbilityManager : MonoBehaviour
         if (enteredState)
         {
             DeactivateAbility();
+            AudioManager.Instance.FadeOut(1, true);
             enteredState = false;
         }
 
@@ -204,7 +210,7 @@ public class AbilityManager : MonoBehaviour
         currentAbility.Activate();
         powerUpAnim.SetBool("Activate", true);
         AudioManager.Instance.PlaySound(powerUpStartSound);
-        AudioManager.Instance.PlayMusic(powerUpContinueSound, true, true, .5f);
+        AudioManager.Instance.PlayMusic(powerUpContinueSound, true, true);
 
         elapsed = 0;
         UiManager.Instance.UpdateSliderUi(currentAbility.coolDownTime);

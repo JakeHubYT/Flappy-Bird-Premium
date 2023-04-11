@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public Animator highScoreTxtAnim;
     public Animator highScoreScreenAnim;
 
+    public GameObject pauseScreen;
+
 
     public AudioClip highScoreScound;
     public int score = 0;
@@ -62,6 +64,15 @@ public class GameManager : MonoBehaviour
     {
         HandleInput();
         UpdateHighScore();
+
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePauseScreen();
+            
+        }
+
+     
 
         highScoreScreenAnim.SetBool("GotHighScore", gotHighScore);
     }
@@ -125,6 +136,23 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
+
+    void TogglePauseScreen()
+    {
+
+        if (!pauseScreen.activeSelf)
+            Time.timeScale = 0;
+        else
+        {
+            Time.timeScale = 1;
+        }
+
+        pauseScreen.SetActive(!pauseScreen.activeSelf);
+
+
+       
+
+    }
 
     #region Scene Stuff
     public void ReplayGame()

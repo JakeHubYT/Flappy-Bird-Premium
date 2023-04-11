@@ -16,4 +16,4 @@ MonoBehaviour:
   activateOnStart: 1
   name: Double Life Ability
   coolDownTime: Infinity
-  DeactiveTime: 10
+  DeactiveTime: Infinity

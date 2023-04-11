@@ -16,4 +16,4 @@ MonoBehaviour:
   activateOnStart: 0
   name: Invincible Ability
   coolDownTime: 5
-  DeactiveTime: 5
+  DeactiveTime: 15

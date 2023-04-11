@@ -1,7 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class VolumeSlider : MonoBehaviour
+public class SfxVolumeSlider : MonoBehaviour
 {
     private Slider slider;
 
@@ -9,7 +11,7 @@ public class VolumeSlider : MonoBehaviour
     {
         slider = GetComponent<Slider>();
 
-        slider.value = AudioManager.preferedMusicVolume;
+        slider.value = AudioManager.preferedSFXVolume;
 
 
     }
@@ -18,9 +20,4 @@ public class VolumeSlider : MonoBehaviour
     {
         AudioManager.Instance.UpdateSFXVolume(value);
     }
-    public void OnMusicSliderValueChanged(float value)
-    {
-        AudioManager.Instance.UpdateMusicVolume(value);
-    }
- 
 }

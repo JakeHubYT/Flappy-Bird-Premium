@@ -7,7 +7,7 @@ public class Item : MonoBehaviour
 {
 
     public int price = 32;
-
+    bool used = false;
 
     public GameObject shopItem;
     public Ability ability;
@@ -42,8 +42,17 @@ public class Item : MonoBehaviour
 
         anim = GetComponent<Animator>();
 
-    }
 
+       
+    }
+    private void Update()
+    {
+        if(price <= 0 && used == false)
+        {
+            isLocked = false;
+            used = true;
+        }
+    }
     public void UseShopItem()
     {
 

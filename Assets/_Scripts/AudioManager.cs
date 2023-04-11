@@ -14,6 +14,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public AudioClip hitMetal;
 
     public Slider volumeSlider;
+    public static float preferedMusicVolume = -5;
+    public static float preferedSFXVolume = -5;
+
 
     private Coroutine fadeCoroutine;
     private bool playingMusic;
@@ -30,6 +33,9 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         playingMusic = false;
+
+            
+
     }
 
     private void OnEnable()
@@ -46,13 +52,38 @@ public class AudioManager : MonoBehaviour
     {
         // Set the initial value of the volume slider to the current volume of the musicSource
         volumeSlider.value = musicSource.volume;
+
+
+    }
+
+    void SetAudioPrefs()
+    {
+
+        if (preferedMusicVolume == -5)
+            UpdateMusicVolume(.4f);
+        else
+        {
+            UpdateMusicVolume(preferedMusicVolume);
+
+        }
+
+
+
+        if (preferedSFXVolume == -5)
+            UpdateSFXVolume(.8f);
+        else
+        {
+            UpdateSFXVolume(preferedMusicVolume);
+        }
     }
 
     public void UpdateMusicVolume(float volumeAmt)
     {
         // Update the volume of the musicSource and sfxSource based on the value of the volume slider
         musicSource.volume = volumeAmt;
-       
+        preferedMusicVolume = volumeAmt;
+
+
     }
     public void UpdateSFXVolume(float volumeAmt)
     {
@@ -61,6 +92,7 @@ public class AudioManager : MonoBehaviour
         sfxSource.volume = volumeAmt;
         longSFXSource.volume = volumeAmt;
         sfxSecondarySource.volume = volumeAmt;
+        preferedSFXVolume= volumeAmt;
     }
 
 
@@ -75,9 +107,11 @@ public class AudioManager : MonoBehaviour
 
         source.PlayOneShot(clip);
         source.pitch = pitch;
+        SetAudioPrefs();
+
     }
 
-    public void PlayMusic(AudioClip clip, bool isSFX = false, bool loop = false, float volume = 1)
+    public void PlayMusic(AudioClip clip, bool isSFX = false, bool loop = false)
     {
         var source = isSFX ? longSFXSource : musicSource;
 
@@ -89,16 +123,19 @@ public class AudioManager : MonoBehaviour
         playingMusic = true;
 
         source.volume = 0;
-        source.volume = volume;
         source.clip = clip;
         source.loop = loop;
         source.Play();
+
+        SetAudioPrefs();
     }
 
     public void StopMusic()
     {
         playingMusic = false;
         musicSource.Stop();
+        SetAudioPrefs();
+
     }
 
     public void FadeOut(float duration, bool isSFX = false)
@@ -113,6 +150,8 @@ public class AudioManager : MonoBehaviour
         }
 
         fadeCoroutine = StartCoroutine(FadeOutCoroutine(duration, source));
+        SetAudioPrefs();
+
     }
 
     private IEnumerator FadeOutCoroutine(float duration, AudioSource sourceToFade)
